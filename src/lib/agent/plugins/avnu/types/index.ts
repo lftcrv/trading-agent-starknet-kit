@@ -11,6 +11,9 @@ export interface SwapParams {
   sellAmount: number;
 }
 
+export interface WalletParams {
+}
+
 /**
  * Token information structure
  * @property {string} name - Name of the token
