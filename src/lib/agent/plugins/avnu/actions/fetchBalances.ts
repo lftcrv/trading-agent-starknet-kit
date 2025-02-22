@@ -58,7 +58,7 @@ export class WalletService {
             
             const balanceInWei = BigInt((balanceCall as { balance: string }).balance);
             const balanceInToken = Number(balanceInWei) / Math.pow(10, tokenInfo.decimals);
-            
+
             return `${tokenName}: ${balanceInToken} ${tokenName}`;
         } catch (error) {
             console.error(`Error fetching balance for ${tokenName}:`, error);
