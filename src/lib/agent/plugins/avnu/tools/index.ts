@@ -8,7 +8,7 @@ export const registerAvnuTools = () => {
   StarknetToolRegistry.registerTool({
     name: 'swap_tokens',
     plugins: 'avnu',
-    description: 'Swap a specified amount of one token for another token',
+    description: `Swap a specified amount of one token for another token. Make sure to leave at least 0.00005 ETH for the fees`,
     schema: swapSchema,
     execute: swapTokens,
   });
