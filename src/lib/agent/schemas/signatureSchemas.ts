@@ -24,14 +24,3 @@ export const getBalanceSignatureSchema = z.object({
   accountAddress: z.string().describe('the account address'),
   assetSymbol: z.string().describe('token Symbol'),
 });
-
-export const getBalanceSchema = z.object({});
-
-export const getBBOSchema = z.object({
-  markets: z
-    .array(z.string())
-    .min(1)
-    .describe(
-      'Array of market symbols to fetch BBO data for, e.g., ["BTC-USD-PERP", "ETH-USD-PERP"]'
-    ),
-});

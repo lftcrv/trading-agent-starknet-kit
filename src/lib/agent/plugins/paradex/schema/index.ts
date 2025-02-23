@@ -19,7 +19,7 @@ export const getOpenPositionsSchema = z.object({
   market: z
     .string()
     .optional()
-    .describe('Optional market to filter positions, e.g., "BTC-USD-PERP"')
+    .describe('Optional market to filter positions, e.g., "BTC-USD-PERP"'),
 });
 
 export const placeOrderMarketSchema = z.object({
@@ -41,3 +41,30 @@ export const getOpenOrdersSchema = z.object({
     .optional()
     .describe('Optional market to filter orders, e.g., "BTC-USD-PERP"'),
 });
+
+export const getMarketDetailsSchema = z.object({
+  market: z
+    .string()
+    .describe('The market symbol to get details for, e.g., "BTC-USD-PERP"'),
+});
+
+export const getMarketTradingInfoSchema = z.object({
+  markets: z
+    .union([z.string(), z.array(z.string())])
+    .describe(
+      'Single market symbol or array of market symbols, e.g., "BTC-USD-PERP" or ["BTC-USD-PERP", "ETH-USD-PERP"]'
+    ),
+});
+
+export const getBalanceSchema = z.object({});
+
+export const getBBOSchema = z.object({
+  markets: z
+    .array(z.string())
+    .min(1)
+    .describe(
+      'Array of market crypto symbols to fetch BBO data for, e.g., ["CRYPTO1-USD-PERP", "CRYPTO2-USD-PERP"]'
+    ),
+});
+
+export const listMarketsSchema = z.object({});

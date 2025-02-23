@@ -1,17 +1,17 @@
 export interface PlaceOrderParams {
-  market: string,
-  side: string,
-  type: string,
-  size: string,
-  price?: string,
-  instruction: string,
+  market: string;
+  side: string;
+  type: string;
+  size: string;
+  price?: string;
+  instruction: string;
 }
 
 export interface PlaceOrderLimitParams {
-  market: string,
-  side: string,
-  size: string,
-  price?: string,
+  market: string;
+  side: string;
+  size: string;
+  price?: string;
 }
 
 export interface PlaceOrderMarketParams {
@@ -33,5 +33,13 @@ export interface GetOpenPositionsParams {
 }
 
 export interface GetBBOParams {
-  markets: string[];  // Array of market symbols to fetch BBO data for
+  markets: string[]; // Array of market symbols to fetch BBO data for
+}
+
+export interface GetMarketDetailsParams {
+  market: string;
+}
+
+export interface GetMarketTradingInfoParams {
+  markets: string | string[];
 }
