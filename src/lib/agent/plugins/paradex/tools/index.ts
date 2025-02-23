@@ -21,6 +21,7 @@ import { paradexGetMarketDetails } from '../actions/fetchDetailedParadexMarkets'
 import { getBalanceSchema } from '../../core/token/schema';
 import { paradexGetMarketTradingInfo } from '../actions/fetchBasicParadexMarkets';
 import { paradexListMarkets } from '../actions/listMarketsOnParadex';
+import { getAnalysisParadex } from '../actions/fetchBackendAnalysis';
 
 export const registerParadexTools = () => {
   StarknetToolRegistry.registerTool({
@@ -106,5 +107,13 @@ export const registerParadexTools = () => {
     description: 'Get a list of all available market symbols on Paradex',
     schema: listMarketsSchema,
     execute: paradexListMarkets,
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'get_analysis_paradex',
+    plugins: 'paradex',
+    description: 'Get the latest analysis of Paradex.',
+    schema: listMarketsSchema,
+    execute: getAnalysisParadex,
   });
 };

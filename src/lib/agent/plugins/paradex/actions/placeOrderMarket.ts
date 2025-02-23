@@ -6,6 +6,7 @@ import { signOrder } from '../utils/paradex-ts/signature';
 import { authenticate } from '../utils/paradex-ts/api';
 import { getAccount, getParadexConfig, ParadexAuthenticationError } from '../utils/utils';
 import { ParadexOrderError } from '../interfaces/errors';
+import { time } from 'console';
 
 export class POService {
   public formatSize(size: number): string {
@@ -109,7 +110,7 @@ export const paradexPlaceOrderMarket = async (
       market: params.market,
       side:
         params.side.toLowerCase() === 'long' ||
-        params.side.toLowerCase() === 'buy'
+          params.side.toLowerCase() === 'buy'
           ? 'BUY'
           : 'SELL',
       type: 'MARKET',
