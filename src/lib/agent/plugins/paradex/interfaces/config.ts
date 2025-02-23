@@ -1,7 +1,3 @@
-export interface CancelParams {
-  orderId: string
-}
-
 export interface SystemConfig {
   readonly apiBaseUrl: string;
   readonly starknet: {

@@ -1,5 +1,5 @@
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
-import { Account, SystemConfig } from '../types';
+import { Account, SystemConfig } from '../interfaces/config';
 import { authenticate } from '../utils/paradex-ts/api';
 import {
   getAccount,
@@ -9,7 +9,6 @@ import {
 import { GetOpenOrdersParams } from '../interfaces/params';
 import { ParadexOpenOrdersError } from '../interfaces/errors';
 import { OrderResult, OrderResponse } from '../interfaces/results';
-
 
 // Service class for open orders operations
 export class OpenOrdersService {

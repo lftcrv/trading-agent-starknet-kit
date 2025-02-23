@@ -13,6 +13,8 @@ import { paradexGetOpenOrders } from '../actions/fetchOpenOrders';
 import { paradexGetOpenPositions } from '../actions/fetchOpenPositions';
 import { getBalanceSchema } from '../../core/token/schema';
 import { paradexGetBalance } from '../actions/fetchAccountBalance';
+import { getBBOSchema } from 'src/lib/agent/schemas/signatureSchemas';
+import { paradexGetBBO } from '../actions/getBBO';
 
 export const registerParadexTools = () => {
   StarknetToolRegistry.registerTool({
@@ -62,5 +64,13 @@ export const registerParadexTools = () => {
     description: 'Get account USDC balance',
     schema: getBalanceSchema,
     execute: paradexGetBalance,
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'get_bbo',
+    plugins: 'paradex',
+    description: 'Get Best Bid/Offer data for specified markets',
+    schema: getBBOSchema,
+    execute: paradexGetBBO,
   });
 };

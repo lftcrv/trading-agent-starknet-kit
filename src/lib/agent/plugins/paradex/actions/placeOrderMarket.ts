@@ -1,7 +1,7 @@
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { PlaceOrderMarketParams, PlaceOrderParams } from '../interfaces/params';
 
-import { Account, SystemConfig } from '../types';
+import { Account, SystemConfig } from '../interfaces/config';
 import { signOrder } from '../utils/paradex-ts/signature';
 import { authenticate } from '../utils/paradex-ts/api';
 import { getAccount, getParadexConfig, ParadexAuthenticationError } from '../utils/utils';

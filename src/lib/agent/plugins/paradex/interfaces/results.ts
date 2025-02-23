@@ -65,3 +65,13 @@ export interface BalanceResult {
 export interface BalanceResponse {
   results: BalanceResult[];
 }
+
+export interface BBOResponse {
+  ask: string;
+  ask_size: string;
+  bid: string;
+  bid_size: string;
+  market: string;
+  last_updated_at: number;
+  seq_no: number;
+}

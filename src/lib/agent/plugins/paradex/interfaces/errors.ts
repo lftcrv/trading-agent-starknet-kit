@@ -37,3 +37,13 @@ export class ParadexBalanceError extends Error {
     this.name = 'ParadexBalanceError';
   }
 }
+
+export class ParadexBBOError extends Error {
+  constructor(
+    message: string,
+    public details?: any
+  ) {
+    super(message);
+    this.name = 'ParadexBBOError';
+  }
+}
