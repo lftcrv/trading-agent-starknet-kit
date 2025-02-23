@@ -19,3 +19,15 @@ export interface PlaceOrderMarketParams {
   side: string;
   size: string;
 }
+
+export interface CancelOrderParams {
+  orderId: string;
+}
+
+export interface GetOpenOrdersParams {
+  market?: string;
+}
+
+export interface GetOpenPositionsParams {
+  market?: string;
+}

@@ -1,8 +1,16 @@
 import { StarknetToolRegistry } from 'src/lib/agent/tools/tools';
-import { cancelOrderSchema, placeOrderLimitSchema, placeOrderMarketSchema } from "../schema";
-import { cancelOrder } from "../actions/cancelOrder";
+import {
+  cancelOrderSchema,
+  getOpenOrdersSchema,
+  getOpenPositionsSchema,
+  placeOrderLimitSchema,
+  placeOrderMarketSchema,
+} from '../schema';
+import { paradexCancelOrder } from '../actions/cancelOrder';
 import { paradexPlaceOrderLimit } from '../actions/placeOrderLimit';
 import { paradexPlaceOrderMarket } from '../actions/placeOrderMarket';
+import { paradexGetOpenOrders } from '../actions/fetchOpenOrders';
+import { paradexGetOpenPositions } from '../actions/fetchOpenPositions';
 
 export const registerParadexTools = () => {
   StarknetToolRegistry.registerTool({
@@ -24,10 +32,25 @@ export const registerParadexTools = () => {
   StarknetToolRegistry.registerTool({
     name: 'cancel_order',
     plugins: 'paradex',
-    description: 'Cancel an unexecuted order (not yet filled) without affecting the position or the asset balance',
+    description:
+      'Cancel an unexecuted order (not yet filled) without affecting the position or the asset balance',
     schema: cancelOrderSchema,
-    execute: cancelOrder,
+    execute: paradexCancelOrder,
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'get_open_orders',
+    plugins: 'paradex',
+    description: 'Get all open orders, optionally filtered by market',
+    schema: getOpenOrdersSchema,
+    execute: paradexGetOpenOrders,
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'get_open_positions',
+    plugins: 'paradex',
+    description: 'Get all open positions, optionally filtered by market',
+    schema: getOpenPositionsSchema,
+    execute: paradexGetOpenPositions,
   });
 };
-
-

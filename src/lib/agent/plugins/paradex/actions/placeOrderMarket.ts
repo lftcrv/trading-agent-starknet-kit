@@ -1,11 +1,11 @@
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
-import { PlaceOrderMarketParams, PlaceOrderParams } from '../interfaces';
+import { PlaceOrderMarketParams, PlaceOrderParams } from '../interfaces/params';
 
-import { ParadexOrderError } from '../utils/ParadexOrderError';
 import { Account, SystemConfig } from '../types';
 import { signOrder } from '../utils/paradex-ts/signature';
 import { authenticate } from '../utils/paradex-ts/api';
 import { getAccount, getParadexConfig, ParadexAuthenticationError } from '../utils/utils';
+import { ParadexOrderError } from '../interfaces/errors';
 
 export class POService {
   public formatSize(size: number): string {
@@ -25,7 +25,7 @@ export class POService {
   ): Promise<any> {
     try {
       if (!account.jwtToken) {
-        throw new ParadexOrderError('JWT token is missing');
+        throw new ParadexOrderError('JWT token is missing');  // TODO: change the error, it is a auth error
       }
 
       const timestamp = Date.now();

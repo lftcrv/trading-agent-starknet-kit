@@ -1,7 +1,7 @@
 import { shortString } from "starknet";
 import { SystemConfig, Account } from "./paradex-ts/types";
 import { validateParadexConfig } from "./environment";
-import { ParadexOrderError } from "./ParadexOrderError";
+import { ParadexOrderError } from "../interfaces/errors";
 
 export function getParadexConfig(): SystemConfig {
     const network = process.env.PARADEX_NETWORK?.toLowerCase();

@@ -1,13 +1,11 @@
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
-import { PlaceOrderLimitParams, PlaceOrderParams } from '../interfaces';
+import { PlaceOrderLimitParams, PlaceOrderParams } from '../interfaces/params';
 
-import { ParadexOrderError } from '../utils/ParadexOrderError';
 import { Account, SystemConfig } from '../types';
-import { shortString } from 'starknet';
-import { validateParadexConfig } from '../utils/environment';
 import { signOrder } from '../utils/paradex-ts/signature';
 import { authenticate } from '../utils/paradex-ts/api';
 import { getAccount, getParadexConfig, ParadexAuthenticationError } from '../utils/utils';
+import { ParadexOrderError } from '../interfaces/errors';
 
 export class POService {
   public formatSize(size: number): string {
