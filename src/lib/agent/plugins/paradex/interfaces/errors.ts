@@ -27,3 +27,13 @@ export class ParadexOpenOrdersError extends Error {
     this.name = 'ParadexOpenOrdersError';
   }
 }
+
+export class ParadexBalanceError extends Error {
+  constructor(
+    message: string,
+    public details?: any
+  ) {
+    super(message);
+    this.name = 'ParadexBalanceError';
+  }
+}

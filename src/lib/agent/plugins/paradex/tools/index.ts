@@ -11,6 +11,8 @@ import { paradexPlaceOrderLimit } from '../actions/placeOrderLimit';
 import { paradexPlaceOrderMarket } from '../actions/placeOrderMarket';
 import { paradexGetOpenOrders } from '../actions/fetchOpenOrders';
 import { paradexGetOpenPositions } from '../actions/fetchOpenPositions';
+import { getBalanceSchema } from '../../core/token/schema';
+import { paradexGetBalance } from '../actions/fetchAccountBalance';
 
 export const registerParadexTools = () => {
   StarknetToolRegistry.registerTool({
@@ -52,5 +54,13 @@ export const registerParadexTools = () => {
     description: 'Get all open positions, optionally filtered by market',
     schema: getOpenPositionsSchema,
     execute: paradexGetOpenPositions,
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'get_balance',
+    plugins: 'paradex',
+    description: 'Get account USDC balance',
+    schema: getBalanceSchema,
+    execute: paradexGetBalance,
   });
 };

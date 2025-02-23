@@ -55,3 +55,13 @@ export interface PositionResult {
 export interface PositionResponse {
   results: PositionResult[];
 }
+
+export interface BalanceResult {
+  token: string;
+  size: string;
+  last_updated_at: number;
+}
+
+export interface BalanceResponse {
+  results: BalanceResult[];
+}
