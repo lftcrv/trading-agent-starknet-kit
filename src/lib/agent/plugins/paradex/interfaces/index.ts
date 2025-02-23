@@ -13,9 +13,9 @@ export interface PlaceOrderLimitParams {
   size: string,
   price?: string,
 }
-export interface OrderRequest {
-  action: string;
+
+export interface PlaceOrderMarketParams {
   market: string;
-  size: number;
-  price?: number; // Optional - if present, becomes a limit order
+  side: string;
+  size: string;
 }

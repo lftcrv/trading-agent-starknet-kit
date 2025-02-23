@@ -14,8 +14,21 @@ export const placeOrderLimitSchema = z.object({
     .describe('The amount of the asset to be bought or sold'),
   price: z
     .number()
-    .optional()
+    .positive()
     .describe('The price at which to place the limit order (optional, for limit orders only)'),
+});
+
+export const placeOrderMarketSchema = z.object({
+  market: z
+    .string()
+    .describe('The market for the order, e.g., "BTC-USD-PERP"'),
+  side: z
+    .string()
+    .describe('The side of the order, either "buy" or "sell"'),
+  size: z
+    .number()
+    .positive()
+    .describe('The amount of the asset to be bought or sold')
 });
 
 export const cancelOrderSchema = z.object({
