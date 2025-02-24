@@ -13,51 +13,77 @@ build)
     docker build --platform linux/amd64 -t starknet-agent-kit .
     ;;
 run)
-    running=$(docker ps -q -f name=starknet-agent)
+    running=$(docker ps -q -f name=starknet-agent-kit)
     if [ -n "$running" ]; then
-        echo "Container 'starknet-agent' is already running. Stopping it first."
-        docker stop starknet-agent
-        docker rm starknet-agent
+        echo "Container 'starknet-agent-kit' is already running. Stopping it first."
+        docker stop starknet-agent-kit
+        docker rm starknet-agent-kit
     fi
 
-    BASE_MOUNTS=(
-        "config:/app/config"
-        "scripts:/app/scripts"
-        "src:/app/src"
+    # Base directories to mount
+    DIRECTORIES=(
+        "config"
+        "scripts"
+        "src"
     )
 
+    AGENT_SERVER_PORT=$(grep AGENT_SERVER_PORT .env | cut -d '=' -f2)
+    AGENT_SERVER_PORT=${AGENT_SERVER_PORT:-8080}
+
     # Build the docker run command
-    CMD="docker run --platform linux/amd64 -p 3000:3000"
+    CMD="docker run --platform linux/amd64 -p ${AGENT_SERVER_PORT}:${AGENT_SERVER_PORT}"
 
-    # Add environment file
-    CMD="$CMD --env-file .env"
+    # Add environment variables from .env file
+    if [ -f .env ]; then
+        while IFS='=' read -r key value || [ -n "$key" ]; do
+            # Skip empty lines and comments
+            if [[ ! "$key" =~ ^[[:space:]]*# && -n "$key" ]]; then
+                # Remove any leading/trailing whitespace
+                key=$(echo "$key" | xargs)
+                value=$(echo "$value" | xargs)
 
-    # Add base mounts
-    for mount in "${BASE_MOUNTS[@]}"; do
-        CMD="$CMD -v $(pwd)/$mount:/app/$mount"
+                # Handle quoted values
+                if [[ $value == \"*\" || $value == \'*\' ]]; then
+                    CMD="$CMD -e $key=$value"
+                else
+                    CMD="$CMD -e $key=\"$value\""
+                fi
+            fi
+        done <.env
+    else
+        echo "Warning: .env file not found"
+    fi
+
+    # Add volume mounts
+    for dir in "${DIRECTORIES[@]}"; do
+        if [ -d "$(pwd)/${dir}" ]; then
+            CMD="$CMD -v $(pwd)/${dir}:/app/${dir}"
+        else
+            echo "Warning: Directory ${dir} not found"
+        fi
     done
 
-    # Add client mount for development
-    CMD="$CMD -v $(pwd)/client:/app/client"
-
     # Add name and container configuration
-    CMD="$CMD -d --name starknet-agent starknet-agent-kit"
+    CMD="$CMD -d --name starknet-agent-kit starknet-agent-kit"
 
-    # Add startup command - using pnpm start which runs both backend and frontend
-    CMD="$CMD sh -c 'pnpm start'"
+    # Add startup command - using only backend
+    CMD="$CMD sh -c 'pnpm start:backend'"
+
+    # Print the command (optional, for debugging)
+    echo "Executing: $CMD"
 
     # Execute the command
     eval "$CMD"
     ;;
 start)
-    docker start starknet-agent
+    docker start starknet-agent-kit
     ;;
 bash)
-    running=$(docker ps -q -f name=starknet-agent)
+    running=$(docker ps -q -f name=starknet-agent-kit)
     if [ -n "$running" ]; then
-        docker exec -it starknet-agent bash
+        docker exec -it starknet-agent-kit bash
     else
-        echo "Container 'starknet-agent' is not running. Please start it first."
+        echo "Container 'starknet-agent-kit' is not running. Please start it first."
         exit 1
     fi
     ;;

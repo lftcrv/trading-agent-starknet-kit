@@ -28,9 +28,9 @@ export async function getAccount(): Promise<Account> {
     try {
         const config = await validateParadexConfig();
         return {
-            address: config.PARADEX_ACCOUNT_ADDRESS,
-            publicKey: config.PARADEX_ACCOUNT_ADDRESS,
-            privateKey: config.PARADEX_PRIVATE_KEY,
+            address: config.PARADEX_TESTNET_ADDRESS,
+            publicKey: config.PARADEX_TESTNET_ADDRESS,
+            privateKey: config.PARADEX_TESTNET_PRIVATE_KEY,
             ethereumAccount: config.ETHEREUM_ACCOUNT_ADDRESS,
         };
     } catch (error) {
@@ -54,7 +54,7 @@ export const sendTradingInfo = async (tradingInfoDto: any, backendPort: number, 
     try {
         const backendPort = process.env.BACKEND_PORT || "8080";
         const isLocal = process.env.LOCAL_DEVELOPMENT === "TRUE";
-        const host = isLocal ? process.env.HOST : "host.docker.internal";
+        const host = isLocal ? process.env.BACKEND_PORT : "host.docker.internal";
         
         console.info(
             "Sending trading info to:",

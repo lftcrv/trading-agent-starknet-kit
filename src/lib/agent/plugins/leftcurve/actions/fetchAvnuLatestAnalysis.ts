@@ -8,7 +8,7 @@ export class AvnuAnalysisService {
         const apiKey = process.env.BACKEND_API_KEY;
         const backendPort = process.env.BACKEND_PORT || "8080";
         const isLocal = process.env.LOCAL_DEVELOPMENT === "TRUE";
-        const host = isLocal ? process.env.HOST : "host.docker.internal";
+        const host = isLocal ? process.env.BACKEND_PORT : "host.docker.internal";
     
         const response = await fetch(
             `http://${host}:${backendPort}/analysis/latest?assets=${assetsParam}&platform=avnu`,

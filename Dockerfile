@@ -1,22 +1,23 @@
 # Use a specific Node.js version for better reproducibility
 FROM node:20-slim AS builder
-
 # Install pnpm globally and necessary build tools
 RUN npm install -g pnpm@9.15.4 && \
     apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y \
-        git \
-        python3 \
-        python3-pip \
-        curl \
-        node-gyp \
-        make \
-        g++ \
-        build-essential \
-        openssl \
-        libssl-dev && \
-    # Install Rust
+    git \
+    python3 \
+    python3-pip \
+    python3-venv \
+    python3-dev \
+    curl \
+    node-gyp \
+    make \
+    g++ \
+    build-essential \
+    openssl \
+    libssl-dev && \
+# Install Rust
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y && \
     . $HOME/.cargo/env && \
     rustup default stable && \
@@ -42,7 +43,7 @@ RUN pnpm install --frozen-lockfile
 COPY . .
 
 # Build the project
-RUN pnpm run build && pnpm prune --prod
+RUN pnpm run build:backend && pnpm prune --prod
 
 # Final runtime image
 FROM node:20-slim
@@ -52,10 +53,15 @@ RUN npm install -g pnpm@9.15.4 && \
     apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y \
-        python3 \
-        curl \
-        openssl && \
-    # Install Rust (needed for runtime)
+    python3 \
+    python3-pip \
+    python3-venv \
+    python3-dev \
+    build-essential \
+    curl \
+    openssl \
+    libssl-dev && \
+# Install Rust (needed for runtime)
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y && \
     . $HOME/.cargo/env && \
     rustup default stable && \
@@ -79,8 +85,8 @@ COPY --from=builder /app/client ./client
 COPY --from=builder /app/config ./config
 COPY --from=builder /app/scripts ./scripts
 
-# Expose the ports (adjust according to your .env configuration)
-EXPOSE 3000
+# Expose the ports
+EXPOSE 8080
 
 # Default command to run the application
-CMD ["pnpm", "start"]
+CMD ["pnpm", "start:backend"]

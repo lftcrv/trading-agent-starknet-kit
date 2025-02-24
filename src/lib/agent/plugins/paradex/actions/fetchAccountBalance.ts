@@ -1,7 +1,11 @@
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { Account, SystemConfig } from '../interfaces/config';
 import { authenticate } from '../utils/paradex-ts/api';
-import { getAccount, getParadexConfig, ParadexAuthenticationError } from '../utils/utils';
+import {
+  getAccount,
+  getParadexConfig,
+  ParadexAuthenticationError,
+} from '../utils/utils';
 import { ParadexBalanceError } from '../interfaces/errors';
 import { BalanceResult, BalanceResponse } from '../interfaces/results';
 

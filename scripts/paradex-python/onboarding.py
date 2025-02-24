@@ -112,8 +112,11 @@ async def main(eth_private_key_hex: str) -> Tuple[bool, Dict[str, str]]:
         all_success = all_success and success
         all_env_vars.update(env_vars)
     
-    # Write environment variables to a file that can be sourced by the shell script
-    with open('/app/.venv/.paradex_env', 'w') as f:
+    # Écrire dans le dossier courant
+    env_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '.venv', '.paradex_env')
+    os.makedirs(os.path.dirname(env_file_path), exist_ok=True)
+    
+    with open(env_file_path, 'w') as f:
         for key, value in all_env_vars.items():
             f.write(f"export {key}='{value}'\n")
     
