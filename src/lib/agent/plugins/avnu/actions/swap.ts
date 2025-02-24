@@ -6,6 +6,8 @@ import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { SwapParams, SwapResult } from '../types';
 import { DEFAULT_QUOTE_SIZE, SLIPPAGE_PERCENTAGE } from '../constants';
 import { TokenService } from './fetchTokens';
+import { getContainerId } from '../utils/getContainerId';
+
 
 /**
  * Service handling token swap operations using AVNU SDK
@@ -145,27 +147,27 @@ export class SwapService {
 
       const tradeObject = {
         tradeId: swapResult.transactionHash,
-        tradeType: "avnuSwap",
+        tradeType: 'avnuSwap',
         trade: {
           sellTokenName: params.sellTokenSymbol,
           sellTokenAddress: quote.sellTokenAddress,
           buyTokenName: params.buyTokenSymbol,
           buyTokenAddress: quote.buyTokenAddress,
           sellAmount: quote.sellAmount.toString(),
-          buyAmount: quote ? quote.buyAmount.toString() : "0",
-          tradePriceUSD: quote ? quote.buyTokenPriceInUsd : "0",
-          explanation: params.explanation ?? "",
+          buyAmount: quote ? quote.buyAmount.toString() : '0',
+          tradePriceUSD: quote ? quote.buyTokenPriceInUsd : '0',
+          explanation: params.explanation ?? '',
         },
       };
 
       const tradingInfoDto = {
-        runtimeAgentId: "4ea91a51d6910fa81af5ecd29e4dd86f46a68601f94dd0ff4728dd88ce156c03", //TODO, implement a real agent ID or see how to manage this
+        runtimeAgentId: getContainerId(),
         information: tradeObject,
       };
 
       await this.sendTradingInfo(tradingInfoDto);
 
-      console.log("explanation :", params.explanation);
+      console.log('explanation :', params.explanation);
 
       return {
         status: 'success',
@@ -210,28 +212,28 @@ export class SwapService {
 
   private async sendTradingInfo(tradingInfoDto: any): Promise<void> {
     try {
-      const backendPort = process.env.BACKEND_PORT || "8080";
-      const isLocal = process.env.LOCAL_DEVELOPMENT === "TRUE";
-      const host = isLocal ? process.env.HOST : "host.docker.internal";
+      const backendPort = process.env.BACKEND_PORT || '8080';
+      const isLocal = process.env.LOCAL_DEVELOPMENT === 'TRUE';
+      const host = isLocal ? process.env.HOST : 'host.docker.internal';
       const apiKey = process.env.BACKEND_API_KEY;
 
       console.log(
-        "Sending trading info to:",
+        'Sending trading info to:',
         `http://${host}:${backendPort}/api/trading-information`
       );
 
       const headers: Record<string, string> = {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       };
 
       if (apiKey) {
-        headers["x-api-key"] = apiKey;
+        headers['x-api-key'] = apiKey;
       }
 
       const response = await fetch(
         `http://${host}:${backendPort}/api/trading-information`,
         {
-          method: "POST",
+          method: 'POST',
           headers,
           body: JSON.stringify(tradingInfoDto),
         }
@@ -243,16 +245,15 @@ export class SwapService {
         );
       }
 
-      console.log("Trading information saved successfully");
+      console.log('Trading information saved successfully');
       const data = await response.json();
-      console.log("Response data:", data);
+      console.log('Response data:', data);
     } catch (error) {
       console.error(
-        "Error saving trading information:",
+        'Error saving trading information:',
         error.response?.data || error.message
       );
     }
-
   }
 }
 

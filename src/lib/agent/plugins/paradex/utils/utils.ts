@@ -126,14 +126,11 @@ export const sendTradingInfo = async (tradingInfoDto: any): Promise<void> => {
         );
       }
 
-      console.log("Trading information saved successfully");
-      const data = await response.json();
-      console.log("Response data:", data);
+        const data = await response.json();
     } catch (error) {
-      console.error(
-        "Error saving trading information:",
-        error.response?.data || error.message
-      );
+        console.error(
+            "Error saving trading information:",
+            error.response?.data || error.message
+        );
     }
-
-  }
+};
