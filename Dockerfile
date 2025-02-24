@@ -85,8 +85,13 @@ COPY --from=builder /app/client ./client
 COPY --from=builder /app/config ./config
 COPY --from=builder /app/scripts ./scripts
 
+# Copy and setup entrypoint script
+COPY scripts/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh && \
+    chmod +x /app/scripts/onboarding.sh
+
 # Expose the ports
 EXPOSE 8080
 
-# Default command to run the application
-CMD ["pnpm", "start:backend"]
+# Set the entrypoint
+ENTRYPOINT ["/entrypoint.sh"]

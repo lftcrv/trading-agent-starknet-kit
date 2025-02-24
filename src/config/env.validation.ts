@@ -72,10 +72,10 @@ export const envSchema = z
   .object({
     // Server configuration
     /** Port number for the server to listen on */
-    SERVER_PORT: z
+    AGENT_SERVER_PORT: z
       .string()
       .transform((val) => parseInt(val, 10))
-      .default('3001'),
+      .default('8080'),
 
     /** Runtime environment for the application */
     NODE_ENV: z
@@ -83,7 +83,7 @@ export const envSchema = z
       .default('development'),
 
     /** API key for general server authentication */
-    SERVER_API_KEY: z
+    AGENT_SERVER_API_KEY: z
       .string()
       .min(1, 'API key is required for server authentication'),
 
