@@ -91,48 +91,49 @@ export class ParadexAuthenticationError extends Error {
   }
 }
 
-export const sendTradingInfo = async (
-  tradingInfoDto: any,
-  backendPort: number,
-  apiKey: string
-) => {
-  try {
-    const backendPort = process.env.BACKEND_PORT || '8080';
-    const isLocal = process.env.LOCAL_DEVELOPMENT === 'TRUE';
-    const host = isLocal
-      ? process.env.BACKEND_SERVER_PORT
-      : 'host.docker.internal';
+export const sendTradingInfo = async (tradingInfoDto: any): Promise<void> => {
+    try {
+      const backendPort = process.env.BACKEND_PORT || "8080";
+      const isLocal = process.env.LOCAL_DEVELOPMENT === "TRUE";
+      const host = isLocal ? process.env.HOST : "host.docker.internal";
+      const apiKey = process.env.BACKEND_API_KEY;
 
-    console.info(
-      'Sending trading info to:',
-      `http://${host}:${backendPort}/api/trading-information`
-    );
+      console.log(
+        "Sending trading info to:",
+        `http://${host}:${backendPort}/api/trading-information`
+      );
 
-    const response = await fetch(
-      `http://${host}:${backendPort}/api/trading-information`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': apiKey,
-        },
-        body: JSON.stringify(tradingInfoDto),
+      const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+      };
+
+      if (apiKey) {
+        headers["x-api-key"] = apiKey;
       }
-    );
 
-    if (!response.ok) {
-      throw new Error(
-        `Failed to save trading info: ${response.status} ${response.statusText}`
+      const response = await fetch(
+        `http://${host}:${backendPort}/api/trading-information`,
+        {
+          method: "POST",
+          headers,
+          body: JSON.stringify(tradingInfoDto),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(
+          `Failed to save trading info: ${response.status} ${response.statusText}`
+        );
+      }
+
+      console.log("Trading information saved successfully");
+      const data = await response.json();
+      console.log("Response data:", data);
+    } catch (error) {
+      console.error(
+        "Error saving trading information:",
+        error.response?.data || error.message
       );
     }
 
-    console.info('Trading information saved successfully');
-    const data = await response.json();
-    console.info('Response data:', data);
-  } catch (error) {
-    console.error(
-      'Error saving trading information:',
-      error.response?.data || error.message
-    );
   }
-};

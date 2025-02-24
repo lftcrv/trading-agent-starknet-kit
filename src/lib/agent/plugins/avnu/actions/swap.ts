@@ -143,6 +143,30 @@ export class SwapService {
         swapResult.transactionHash
       );
 
+      const tradeObject = {
+        tradeId: swapResult.transactionHash,
+        tradeType: "avnuSwap",
+        trade: {
+          sellTokenName: params.sellTokenSymbol,
+          sellTokenAddress: quote.sellTokenAddress,
+          buyTokenName: params.buyTokenSymbol,
+          buyTokenAddress: quote.buyTokenAddress,
+          sellAmount: quote.sellAmount.toString(),
+          buyAmount: quote ? quote.buyAmount.toString() : "0",
+          tradePriceUSD: quote ? quote.buyTokenPriceInUsd : "0",
+          explanation: params.explanation ?? "",
+        },
+      };
+
+      const tradingInfoDto = {
+        runtimeAgentId: "4ea91a51d6910fa81af5ecd29e4dd86f46a68601f94dd0ff4728dd88ce156c03", //TODO, implement a real agent ID or see how to manage this
+        information: tradeObject,
+      };
+
+      await this.sendTradingInfo(tradingInfoDto);
+
+      console.log("explanation :", params.explanation);
+
       return {
         status: 'success',
         message: `Successfully swapped ${params.sellAmount} ${params.sellTokenSymbol} for ${params.buyTokenSymbol}`,
@@ -182,6 +206,53 @@ export class SwapService {
     const events =
       await this.agent.transactionMonitor.getTransactionEvents(txHash);
     return { receipt, events };
+  }
+
+  private async sendTradingInfo(tradingInfoDto: any): Promise<void> {
+    try {
+      const backendPort = process.env.BACKEND_PORT || "8080";
+      const isLocal = process.env.LOCAL_DEVELOPMENT === "TRUE";
+      const host = isLocal ? process.env.HOST : "host.docker.internal";
+      const apiKey = process.env.BACKEND_API_KEY;
+
+      console.log(
+        "Sending trading info to:",
+        `http://${host}:${backendPort}/api/trading-information`
+      );
+
+      const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+      };
+
+      if (apiKey) {
+        headers["x-api-key"] = apiKey;
+      }
+
+      const response = await fetch(
+        `http://${host}:${backendPort}/api/trading-information`,
+        {
+          method: "POST",
+          headers,
+          body: JSON.stringify(tradingInfoDto),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(
+          `Failed to save trading info: ${response.status} ${response.statusText}`
+        );
+      }
+
+      console.log("Trading information saved successfully");
+      const data = await response.json();
+      console.log("Response data:", data);
+    } catch (error) {
+      console.error(
+        "Error saving trading information:",
+        error.response?.data || error.message
+      );
+    }
+
   }
 }
 

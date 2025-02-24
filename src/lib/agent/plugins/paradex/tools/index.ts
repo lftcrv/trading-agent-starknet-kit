@@ -21,12 +21,13 @@ import { paradexGetMarketDetails } from '../actions/fetchDetailedParadexMarkets'
 import { getBalanceSchema } from '../../core/token/schema';
 import { paradexGetMarketTradingInfo } from '../actions/fetchBasicParadexMarkets';
 import { paradexListMarkets } from '../actions/listMarketsOnParadex';
+import { getAnalysisParadex } from '../actions/fetchBackendAnalysis';
 
 export const registerParadexTools = () => {
   StarknetToolRegistry.registerTool({
     name: 'place_order_limit',
     plugins: 'paradex',
-    description: 'Place an order limit on Paradex exchange',
+    description: 'Place an order limit on Paradex exchange. Base you on paradex analysis and your paradex positions to decide if you should use this action',
     schema: placeOrderLimitSchema,
     execute: paradexPlaceOrderLimit,
   });
@@ -34,7 +35,7 @@ export const registerParadexTools = () => {
   StarknetToolRegistry.registerTool({
     name: 'place_order_market',
     plugins: 'paradex',
-    description: 'Place an order market on Paradex exchange',
+    description: 'Place an order market on Paradex exchange. Base you on paradex analysis to decide if you should use this action',
     schema: placeOrderMarketSchema,
     execute: paradexPlaceOrderMarket,
   });
@@ -106,5 +107,13 @@ export const registerParadexTools = () => {
     description: 'Get a list of all available market symbols on Paradex',
     schema: listMarketsSchema,
     execute: paradexListMarkets,
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'get_analysis_paradex',
+    plugins: 'paradex',
+    description: 'Get the latest analysis of Paradex.',
+    schema: listMarketsSchema,
+    execute: getAnalysisParadex,
   });
 };

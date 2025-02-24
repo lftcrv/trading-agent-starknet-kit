@@ -28,26 +28,13 @@ fi
 cd "$PARADEX_PATH"
 check_error "Unable to access directory $PARADEX_PATH"
 
-log "🔧 Creating virtual environment..."
-# Remove old venv if it exists
-rm -rf .venv
+# Use the pre-built virtual environment from Docker build
+log "🔄 Using pre-built virtual environment..."
 
-# Create new venv
-python3 -m venv .venv
-check_error "Unable to create virtual environment"
-
-log "🔄 Activating virtual environment..."
-. .venv/bin/activate
-check_error "Unable to activate virtual environment"
-
-# Create directory for environment file
+# Ensure directory for environment file exists
 mkdir -p .venv
 touch .venv/.paradex_env
 chmod 600 .venv/.paradex_env
-
-log "📦 Installing dependencies..."
-pip install -r requirements.txt
-check_error "Unable to install dependencies"
 
 # Check if ETHEREUM_PRIVATE_KEY is set
 if [ -z "$ETHEREUM_PRIVATE_KEY" ]; then
@@ -56,13 +43,15 @@ if [ -z "$ETHEREUM_PRIVATE_KEY" ]; then
 fi
 
 log "🚀 Starting onboarding script..."
-python onboarding.py
+
+# Use the global Python environment that was prepared in the Dockerfile
+# This avoids recreating and reinstalling everything
+python3 onboarding.py
 check_error "Error running onboarding script"
 
 # If onboarding successful, export environment variables
 if [ -f "$ENV_FILE" ]; then
     log "📥 Exporting environment variables..."
-
     # Backup current /etc/environment
     cp $SYSTEM_ENV "${SYSTEM_ENV}.bak"
 
@@ -72,14 +61,11 @@ if [ -f "$ENV_FILE" ]; then
         export*)
             # Export to current shell
             eval "$line"
-
             # Extract name and value without 'export'
             var_name=$(echo "$line" | cut -d'=' -f1 | cut -d' ' -f2)
             var_value=$(eval "echo \$$var_name")
-
             # Add to system file (without 'export')
             echo "$var_name='$var_value'" >>$SYSTEM_ENV
-
             # Display exported variable
             case "$var_name" in
             *PRIVATE_KEY*)
@@ -92,9 +78,7 @@ if [ -f "$ENV_FILE" ]; then
             ;;
         esac
     done <"$ENV_FILE"
-
     log "🔍 Variables added to $SYSTEM_ENV"
-
     # Verify exports
     log "🔍 Verifying system exports:"
     grep "PARADEX_" $SYSTEM_ENV

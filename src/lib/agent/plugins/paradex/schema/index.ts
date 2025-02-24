@@ -13,6 +13,9 @@ export const placeOrderLimitSchema = z.object({
     .describe(
       'The price at which to place the limit order (optional, for limit orders only)'
     ),
+  explanation: z
+    .string()
+    .describe("Explanation of the place order limit choice as a trader. Express yourself according to your personality, your bio, and your lore. Give deep specific details about what leads to your decision to buy that specific asset at these speficic time, according to your data, market conditions, ..."),
 });
 
 export const getOpenPositionsSchema = z.object({
@@ -29,10 +32,16 @@ export const placeOrderMarketSchema = z.object({
     .number()
     .positive()
     .describe('The amount of the asset to be bought or sold'),
+  explanation: z
+    .string()
+    .describe("explanation of the place order market choice as a trader. Express yourself according to your personality, your bio, and your lore. Give deep specific details about what leads to your decision to buy that specific asset at these speficic time, according to your data, market conditions, ..."),
 });
 
 export const cancelOrderSchema = z.object({
   orderId: z.string().describe('The ID of the order to cancel'),
+  explanation: z
+    .string()
+    .describe("explanation on why to cancel that order as a trader. Express yourself according to your personality, your bio, and your lore. Give deep specific details about what leads to your decision to buy that specific asset at these speficic time, according to your data, market conditions, ..."),
 });
 
 export const getOpenOrdersSchema = z.object({

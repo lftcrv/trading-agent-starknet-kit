@@ -9,6 +9,7 @@ export interface SwapParams {
   sellTokenSymbol: string;
   buyTokenSymbol: string;
   sellAmount: number;
+  explanation?: string;
 }
 
 export interface WalletParams {

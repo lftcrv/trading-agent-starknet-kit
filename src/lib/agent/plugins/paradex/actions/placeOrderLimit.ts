@@ -4,7 +4,7 @@ import { PlaceOrderLimitParams, PlaceOrderParams } from '../interfaces/params';
 import { Account, SystemConfig } from '../interfaces/config';
 import { signOrder } from '../utils/paradex-ts/signature';
 import { authenticate } from '../utils/paradex-ts/api';
-import { getAccount, getParadexConfig, ParadexAuthenticationError } from '../utils/utils';
+import { getAccount, getParadexConfig, ParadexAuthenticationError, sendTradingInfo } from '../utils/utils';
 import { ParadexOrderError } from '../interfaces/errors';
 
 export class POService {
@@ -109,7 +109,7 @@ export const paradexPlaceOrderLimit = async (
       market: params.market,
       side:
         params.side.toLowerCase() === 'long' ||
-        params.side.toLowerCase() === 'buy'
+          params.side.toLowerCase() === 'buy'
           ? 'BUY'
           : 'SELL',
       type: 'LIMIT',
@@ -122,9 +122,34 @@ export const paradexPlaceOrderLimit = async (
 
     // Place the order
     const result = await service.placeOrder(config, account, orderParams);
-    console.log('Order placed successfully:', result);
 
-    return true;
+    if (result) {
+      // Send trading info to backend
+      const tradeObject = {
+        tradeId: result.id ?? "0",
+        tradeType: "paredexPlaceOrderLimit",
+        trade: {
+          market: result.market,
+          side: result.side,
+          type: result.type,
+          size: result.size,
+          price: result.price,
+          instruction: result.instruction,
+          explanation: params.explanation ?? "",
+        },
+      };
+      const tradingInfoDto = {
+        runtimeAgentId: "4ea91a51d6910fa81af5ecd29e4dd86f46a68601f94dd0ff4728dd88ce156c03", //TODO, implement a real agent ID or see how to manage this
+        information: tradeObject,
+      };
+      await sendTradingInfo(tradingInfoDto);
+      console.log('Order placed successfully:', result);
+      console.log("explanation :", params.explanation);
+      return true;
+    } else {
+      console.warn('Failed to cancel order');
+      return false;
+    }
   } catch (error) {
     if (error instanceof ParadexOrderError) {
       console.error('Order placement error:', error.details || error.message);
