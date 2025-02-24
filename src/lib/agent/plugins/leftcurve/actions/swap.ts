@@ -8,7 +8,6 @@ import { DEFAULT_QUOTE_SIZE, SLIPPAGE_PERCENTAGE } from '../constants';
 import { TokenService } from './fetchTokens';
 import { getContainerId } from '../utils/getContainerId';
 
-
 /**
  * Service handling token swap operations using AVNU SDK
  * @class SwapService

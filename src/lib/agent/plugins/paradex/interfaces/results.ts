@@ -150,7 +150,6 @@ export interface MarketTradingInfoBasic {
   max_funding_rate_change: string;
 }
 
-
 export interface ListMarketResponse {
   results: Array<{
     symbol: string;
