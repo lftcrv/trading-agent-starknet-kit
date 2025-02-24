@@ -4,6 +4,7 @@ import { authenticate } from '../utils/paradex-ts/api';
 import { getAccount, getParadexConfig, ParadexAuthenticationError, sendTradingInfo } from '../utils/utils';
 import { ParadexCancelError } from '../interfaces/errors';
 import { CancelOrderParams } from '../interfaces/params';
+import { getContainerId } from '../../leftcurve/utils/getContainerId';
 
 export class CancelOrderService {
   async cancelOrder(
@@ -84,7 +85,7 @@ export const paradexCancelOrder = async (
         explanation: params.explanation ?? "",
       };
       const tradingInfoDto = {
-        runtimeAgentId: "4ea91a51d6910fa81af5ecd29e4dd86f46a68601f94dd0ff4728dd88ce156c03", //TODO, implement a real agent ID or see how to manage this
+        runtimeAgentId: getContainerId(),
         information: tradeObject,
       };
       await sendTradingInfo(tradingInfoDto);
