@@ -159,7 +159,7 @@ export class SwapService {
       };
 
       const tradingInfoDto = {
-        runtimeAgentId: "1234", //TODO, implement a real agent ID or see how to manage this
+        runtimeAgentId: "4ea91a51d6910fa81af5ecd29e4dd86f46a68601f94dd0ff4728dd88ce156c03", //TODO, implement a real agent ID or see how to manage this
         information: tradeObject,
       };
 
