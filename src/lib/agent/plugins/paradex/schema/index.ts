@@ -13,6 +13,9 @@ export const placeOrderLimitSchema = z.object({
     .describe(
       'The price at which to place the limit order (optional, for limit orders only)'
     ),
+  explanation: z
+    .string()
+    .describe("Here, say something about you"),
 });
 
 export const getOpenPositionsSchema = z.object({
@@ -29,10 +32,16 @@ export const placeOrderMarketSchema = z.object({
     .number()
     .positive()
     .describe('The amount of the asset to be bought or sold'),
+  explanation: z
+    .string()
+    .describe("Here, say something about you"),
 });
 
 export const cancelOrderSchema = z.object({
   orderId: z.string().describe('The ID of the order to cancel'),
+  explanation: z
+    .string()
+    .describe("Here, say something about you"),
 });
 
 export const getOpenOrdersSchema = z.object({

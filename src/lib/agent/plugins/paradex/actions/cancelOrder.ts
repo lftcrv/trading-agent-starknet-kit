@@ -1,12 +1,9 @@
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { Account, SystemConfig } from '../interfaces/config';
 import { authenticate } from '../utils/paradex-ts/api';
-import { getAccount, getParadexConfig, ParadexAuthenticationError } from '../utils/utils';
+import { getAccount, getParadexConfig, ParadexAuthenticationError, sendTradingInfo } from '../utils/utils';
 import { ParadexCancelError } from '../interfaces/errors';
-
-export interface CancelOrderParams {
-  orderId: string;
-}
+import { CancelOrderParams } from '../interfaces/params';
 
 export class CancelOrderService {
   async cancelOrder(
@@ -51,9 +48,9 @@ export class CancelOrderService {
       throw error instanceof ParadexCancelError
         ? error
         : new ParadexCancelError(
-            'Failed to cancel order',
-            error instanceof Error ? error.message : error
-          );
+          'Failed to cancel order',
+          error instanceof Error ? error.message : error
+        );
     }
   }
 }
@@ -81,7 +78,18 @@ export const paradexCancelOrder = async (
     // Cancel the order
     const result = await service.cancelOrder(config, account, params.orderId);
     if (result) {
+      const tradeObject = {
+        tradeId: params.orderId,
+        tradeType: "paredexCancelOrder",
+        explanation: params.explanation ?? "",
+      };
+      const tradingInfoDto = {
+        runtimeAgentId: "1234", //TODO, implement a real agent ID or see how to manage this
+        information: tradeObject,
+      };
+      await sendTradingInfo(tradingInfoDto);
       console.log('Order cancelled successfully');
+      console.log("explanation :", params.explanation);
       return true;
     } else {
       console.warn('Failed to cancel order');

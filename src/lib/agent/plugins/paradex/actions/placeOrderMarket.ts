@@ -4,7 +4,7 @@ import { PlaceOrderMarketParams, PlaceOrderParams } from '../interfaces/params';
 import { Account, SystemConfig } from '../interfaces/config';
 import { signOrder } from '../utils/paradex-ts/signature';
 import { authenticate } from '../utils/paradex-ts/api';
-import { getAccount, getParadexConfig, ParadexAuthenticationError } from '../utils/utils';
+import { getAccount, getParadexConfig, ParadexAuthenticationError, sendTradingInfo } from '../utils/utils';
 import { ParadexOrderError } from '../interfaces/errors';
 import { time } from 'console';
 
@@ -122,9 +122,34 @@ export const paradexPlaceOrderMarket = async (
 
     // Place the order
     const result = await service.placeOrder(config, account, orderParams);
-    console.log('Market order placed successfully:', result);
 
-    return true;
+    if (result) {
+      // Send trading info to backend
+      const tradeObject = {
+        tradeId: result.id ?? "0",
+        tradeType: "paredexPlaceOrderMarket",
+        trade: {
+          market: result.market,
+          side: result.side,
+          type: result.type,
+          size: result.size,
+          price: result.price,
+          instruction: result.instruction,
+          explanation: params.explanation ?? ""
+        },
+      };
+      const tradingInfoDto = {
+        runtimeAgentId: "1234", //TODO, implement a real agent ID or see how to manage this
+        information: tradeObject,
+      };
+      await sendTradingInfo(tradingInfoDto);
+      console.log('Order placed successfully:', result);
+      console.log("explanation :", params.explanation);
+      return true;
+    } else {
+      console.warn('Failed to cancel order');
+      return false;
+    }
   } catch (error) {
     if (error instanceof ParadexOrderError) {
       console.error(

@@ -12,16 +12,19 @@ export interface PlaceOrderLimitParams {
   side: string;
   size: string;
   price?: string;
+  explanation?: string;
+}
+
+export interface CancelOrderParams {
+  orderId: string;
+  explanation?: string;
 }
 
 export interface PlaceOrderMarketParams {
   market: string;
   side: string;
   size: string;
-}
-
-export interface CancelOrderParams {
-  orderId: string;
+  explanation?: string;
 }
 
 export interface GetOpenOrdersParams {

@@ -44,7 +44,6 @@ export const getAnalysisParadex = async (
             return "No analysis data available for the requested assets.";
         }
 
-        console.log(JSON.stringify(data, null, 2));
         return JSON.stringify(data, null, 2);
     } catch (error) {
         console.log("Error fetching technical analysis:", error);
