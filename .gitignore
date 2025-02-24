@@ -47,3 +47,6 @@ tsconfig.build.tsbuildinfo
 tsconfig.tsbuildinfo
 
 *.tgz
+
+.venv
+*.pyc
