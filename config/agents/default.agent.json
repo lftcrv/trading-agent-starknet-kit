@@ -23,5 +23,5 @@
   "chat_id": "test0",
 
   "external_plugins": [],
-  "internal_plugins": ["rpc", "avnu", "lftcrv", "paradex"]
+  "internal_plugins": ["rpc", "lftcrv", "paradex"]
 }
