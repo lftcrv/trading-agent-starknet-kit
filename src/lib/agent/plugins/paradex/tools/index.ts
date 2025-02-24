@@ -68,7 +68,7 @@ export const registerParadexTools = () => {
   });
 
   StarknetToolRegistry.registerTool({
-    name: 'get_balance',
+    name: 'get_balance_on_paradex',
     plugins: 'paradex',
     description: 'Get account balance on Paradex exchange (USDC)',
     schema: getBalanceSchema,
