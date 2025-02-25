@@ -1,7 +1,12 @@
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { Account, SystemConfig } from '../interfaces/config';
 import { authenticate } from '../utils/paradex-ts/api';
-import { getAccount, getParadexConfig, ParadexAuthenticationError, sendTradingInfo } from '../utils/utils';
+import {
+  getAccount,
+  getParadexConfig,
+  ParadexAuthenticationError,
+  sendTradingInfo,
+} from '../utils/utils';
 import { ParadexCancelError } from '../interfaces/errors';
 import { CancelOrderParams } from '../interfaces/params';
 import { getContainerId } from '../../leftcurve/utils/getContainerId';
@@ -49,9 +54,9 @@ export class CancelOrderService {
       throw error instanceof ParadexCancelError
         ? error
         : new ParadexCancelError(
-          'Failed to cancel order',
-          error instanceof Error ? error.message : error
-        );
+            'Failed to cancel order',
+            error instanceof Error ? error.message : error
+          );
     }
   }
 }
@@ -90,7 +95,7 @@ export const paradexCancelOrder = async (
       };
       await sendTradingInfo(tradingInfoDto);
       console.log('Order cancelled successfully');
-      console.log("explanation :", params.explanation);
+      console.log('explanation :', params.explanation);
       return true;
     } else {
       console.warn('Failed to cancel order');

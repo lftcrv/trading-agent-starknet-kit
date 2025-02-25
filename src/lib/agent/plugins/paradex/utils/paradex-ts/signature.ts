@@ -1,12 +1,12 @@
-import { getUnixTime } from "date-fns";
+import { getUnixTime } from 'date-fns';
 import {
   shortString,
   ec,
   typedData as starkTypedData,
   TypedData,
-} from "starknet";
+} from 'starknet';
 
-import { toQuantums } from "./conversions";
+import { toQuantums } from './conversions';
 
 import {
   AuthRequest,
@@ -14,8 +14,8 @@ import {
   buildOnboardingTypedData,
   buildOrderTypedData,
   UnixTime,
-} from "./typed_data";
-import { Account, SystemConfig } from "./types";
+} from './typed_data';
+import { Account, SystemConfig } from './types';
 
 const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
 
@@ -59,9 +59,9 @@ export function signAuthRequest(
   const { timestamp, expiration } = generateTimestamps();
 
   const request: AuthRequest = {
-    method: "POST",
-    path: "/v1/auth",
-    body: "", // Assuming no body is required for this request
+    method: 'POST',
+    path: '/v1/auth',
+    body: '', // Assuming no body is required for this request
     timestamp,
     expiration,
   };
@@ -78,9 +78,9 @@ export function signOrder(
   orderDetails: Record<string, string>,
   timestamp: UnixTime
 ): string {
-  const sideForSigning = orderDetails.side === "BUY" ? "1" : "2";
+  const sideForSigning = orderDetails.side === 'BUY' ? '1' : '2';
 
-  const priceForSigning = toQuantums(orderDetails.price ?? "0", 8);
+  const priceForSigning = toQuantums(orderDetails.price ?? '0', 8);
   const sizeForSigning = toQuantums(orderDetails.size, 8);
   const orderTypeForSigning = shortString.encodeShortString(orderDetails.type);
   const marketForSigning = shortString.encodeShortString(orderDetails.market);

@@ -12,7 +12,9 @@ export class ConfigurationService {
     const envVariables = {
       NODE_ENV: this.configService.get<string>('NODE_ENV'),
       AGENT_SERVER_PORT: this.configService.get<string>('AGENT_SERVER_PORT'),
-      AGENT_SERVER_API_KEY: this.configService.get<string>('AGENT_SERVER_API_KEY'),
+      AGENT_SERVER_API_KEY: this.configService.get<string>(
+        'AGENT_SERVER_API_KEY'
+      ),
       STARKNET_PRIVATE_KEY: this.configService.get<string>(
         'STARKNET_PRIVATE_KEY'
       ),
