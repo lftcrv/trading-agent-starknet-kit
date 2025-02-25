@@ -128,7 +128,7 @@ export const paradexPlaceOrderMarket = async (
       // Send trading info to backend
       const tradeObject = {
         tradeId: result.id ?? "0",
-        tradeType: "paredexPlaceOrderMarket",
+        tradeType: "paradexPlaceOrderMarket",
         trade: {
           market: result.market,
           side: result.side,

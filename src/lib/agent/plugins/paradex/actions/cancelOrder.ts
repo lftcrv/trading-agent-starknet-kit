@@ -81,7 +81,7 @@ export const paradexCancelOrder = async (
     if (result) {
       const tradeObject = {
         tradeId: params.orderId,
-        tradeType: "paredexCancelOrder",
+        tradeType: "paradexCancelOrder",
         explanation: params.explanation ?? "",
       };
       const tradingInfoDto = {

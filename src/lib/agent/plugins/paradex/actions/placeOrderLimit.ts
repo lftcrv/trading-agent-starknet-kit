@@ -128,7 +128,7 @@ export const paradexPlaceOrderLimit = async (
       // Send trading info to backend
       const tradeObject = {
         tradeId: result.id ?? "0",
-        tradeType: "paredexPlaceOrderLimit",
+        tradeType: "paradexPlaceOrderLimit",
         trade: {
           market: result.market,
           side: result.side,
