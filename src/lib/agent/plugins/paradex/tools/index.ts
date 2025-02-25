@@ -27,7 +27,8 @@ export const registerParadexTools = () => {
   StarknetToolRegistry.registerTool({
     name: 'place_order_limit',
     plugins: 'paradex',
-    description: 'Place an order limit on Paradex exchange. Base you on paradex analysis and your paradex positions to decide if you should use this action',
+    description:
+      'Place an order limit on Paradex exchange. Base you on paradex analysis and your paradex positions to decide if you should use this action',
     schema: placeOrderLimitSchema,
     execute: paradexPlaceOrderLimit,
   });
@@ -35,7 +36,8 @@ export const registerParadexTools = () => {
   StarknetToolRegistry.registerTool({
     name: 'place_order_market',
     plugins: 'paradex',
-    description: 'Place an order market on Paradex exchange. Base you on paradex analysis to decide if you should use this action',
+    description:
+      'Place an order market on Paradex exchange. Base you on paradex analysis to decide if you should use this action',
     schema: placeOrderMarketSchema,
     execute: paradexPlaceOrderMarket,
   });

@@ -8,7 +8,7 @@ import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { CheckpointMetadata, MemorySaver } from '@langchain/langgraph';
 import { createReactAgent } from '@langchain/langgraph/prebuilt';
 import { createAllowedToollkits } from './tools/external_tools';
-import { BaseMessage, SystemMessage } from "@langchain/core/messages";
+import { BaseMessage, SystemMessage } from '@langchain/core/messages';
 
 export const createAutonomousAgent = (
   starknetAgent: StarknetAgentInterface,
@@ -75,14 +75,14 @@ export const createAutonomousAgent = (
 
       const memory = new MemorySaver();
       const agentConfig = {
-        configurable: { 
+        configurable: {
           thread_id: json_config.chat_id,
           checkpoint_ns: 'default',
           max_checkpoints: 6,
           max_tokens_per_request: 12000,
           max_messages: 6,
-          recursionLimit: 50
-        }
+          recursionLimit: 50,
+        },
       };
 
       const agent = createReactAgent({
@@ -90,16 +90,17 @@ export const createAutonomousAgent = (
         tools: tools,
         checkpointSaver: memory,
         stateModifier: async (state) => {
-    
           const sequences: BaseMessage[][] = [];
           let currentSequence: BaseMessage[] = [];
-    
+
           for (let i = 0; i < state.messages.length; i++) {
             const current = state.messages[i];
             const next = state.messages[i + 1];
-    
-            console.log(`Content length: ${current.content?.toString().length}`);
-    
+
+            console.log(
+              `Content length: ${current.content?.toString().length}`
+            );
+
             if (current.additional_kwargs?.stop_reason === 'tool_use') {
               // Début d'une nouvelle séquence d'outil
               if (currentSequence.length > 0) {
@@ -116,23 +117,23 @@ export const createAutonomousAgent = (
               currentSequence.push(current);
             }
           }
-    
+
           // Ajouter la dernière séquence si elle existe
           if (currentSequence.length > 0) {
             sequences.push(currentSequence);
           }
-    
+
           // Prendre les 2 dernières séquences complètes
           const recentSequences = sequences.slice(-2);
           const finalMessages = [
             new SystemMessage(json_config.prompt),
-            ...recentSequences.flat()
+            ...recentSequences.flat(),
           ];
-    
+
           return finalMessages;
-        }
+        },
       });
-      
+
       return { agent, agentConfig, json_config };
     }
   } catch (error) {

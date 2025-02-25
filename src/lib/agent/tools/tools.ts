@@ -95,7 +95,7 @@ export const registerTools = () => {
   registerAvnuTools();
 
   registerLftcrvTools();
-  
+
   registerParadexTools();
 
   registerTokenTools();
