@@ -5,7 +5,7 @@ export const getAnalysisParadex = async (agent: StarknetAgentInterface) => {
     const apiKey = process.env.BACKEND_API_KEY;
     const backendPort = process.env.BACKEND_PORT || '8080';
     const isLocal = process.env.LOCAL_DEVELOPMENT === 'TRUE';
-    const host = isLocal ? process.env.HOST : 'host.docker.internal';
+    const host = isLocal ? process.env.HOST : '172.17.0.1';
 
     if (!apiKey) {
       console.error('Backend API key not set');
