@@ -16,6 +16,7 @@ import { FileTypeGuard } from 'src/lib/guard/file-validator.guard';
 import { FastifyRequest } from 'fastify';
 import { promises as fs } from 'fs';
 import { getFilename } from 'src/lib/agent/plugins/atlantic/utils/getFilename';
+import { load_json_config } from 'src/lib/agent/jsonConfig';
 
 @Controller('wallet')
 export class WalletController implements OnModuleInit {
@@ -27,6 +28,8 @@ export class WalletController implements OnModuleInit {
   ) {}
 
   onModuleInit() {
+    const agentconfig = load_json_config('default.agent.json');
+
     this.agent = new StarknetAgent({
       provider: this.config.starknet.provider,
       accountPrivateKey: this.config.starknet.privateKey,
@@ -36,6 +39,7 @@ export class WalletController implements OnModuleInit {
       aiProviderApiKey: this.config.ai.apiKey,
       signature: 'wallet',
       agentMode: 'agent',
+      agentconfig,
     });
   }
 

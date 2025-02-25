@@ -1,6 +1,8 @@
 import { SystemMessage } from '@langchain/core/messages';
 import { createBox, formatSection } from './formatting';
 import chalk from 'chalk';
+import * as fs from 'fs';
+import * as path from 'path';
 
 export interface Token {
   symbol: string;
@@ -129,7 +131,10 @@ export const validateConfig = (config: JsonConfig) => {
 
 const checkParseJson = (agent_config_name: string): JsonConfig | undefined => {
   try {
-    const json = require(`../../../config/agents/${agent_config_name}`);
+    const filePath = path.join(process.cwd(), 'config', 'agents', agent_config_name);
+    const contents = fs.readFileSync(filePath, 'utf-8');
+    const json = JSON.parse(contents);
+
     if (!json) {
       throw new Error(`Can't access to ./config/agents/config-agent.json`);
     }
