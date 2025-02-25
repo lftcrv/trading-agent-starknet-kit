@@ -15,7 +15,8 @@ import { AgentRequestDTO } from './dto/agents';
 import { FileTypeGuard } from 'src/lib/guard/file-validator.guard';
 import { FastifyRequest } from 'fastify';
 import { promises as fs } from 'fs';
-import path from 'path';
+import { getFilename } from 'src/lib/agent/plugins/atlantic/utils/getFilename';
+import { load_json_config } from 'src/lib/agent/jsonConfig';
 
 @Controller('wallet')
 export class WalletController implements OnModuleInit {
@@ -27,6 +28,8 @@ export class WalletController implements OnModuleInit {
   ) {}
 
   onModuleInit() {
+    const agentconfig = load_json_config('default.agent.json');
+
     this.agent = new StarknetAgent({
       provider: this.config.starknet.provider,
       accountPrivateKey: this.config.starknet.privateKey,
@@ -36,6 +39,7 @@ export class WalletController implements OnModuleInit {
       aiProviderApiKey: this.config.ai.apiKey,
       signature: 'wallet',
       agentMode: 'agent',
+      agentconfig,
     });
   }
 
@@ -70,17 +74,17 @@ export class WalletController implements OnModuleInit {
     const path = process.env.PATH_UPLOAD_DIR;
     if (!path) throw new Error(`PATH_UPLOAD_DIR must be defined in .env file`);
 
-    const filePath = `${path}${filename.filename}`;
-    const normalizedPath = path.normalize();
+    const fullPath = await getFilename(filename.filename);
+    const normalizedPath = fullPath.normalize();
 
     try {
       await fs.access(normalizedPath);
     } catch {
-      throw new NotFoundException(`File not found : ${filePath}`);
+      throw new NotFoundException(`File not found : ${path}`);
     }
 
     try {
-      await fs.unlink(filePath);
+      await fs.unlink(fullPath);
       logger.debug({ message: `File ${filename.filename} has been deleted` });
       return { status: 'success', data: 'The file has been deleted.' };
     } catch (error) {
@@ -90,13 +94,17 @@ export class WalletController implements OnModuleInit {
           name: error.name,
           stack: error.stack,
         },
-        filePath: filePath,
+        filePath: fullPath,
       });
       switch (error.code) {
         case 'ENOENT':
-          throw new NotFoundException(`File not found : ${filePath}`); // HttpException(404)
+          throw new NotFoundException(
+            `File not found : ${path}${filename.filename}`
+          ); // HttpException(404)
         case 'EACCES':
-          throw new Error(`Insufficient permits for ${filePath}`); // HttpException(403)
+          throw new Error(
+            `Insufficient permits for ${path}${filename.filename}`
+          ); // HttpException(403)
         default:
           throw new Error(`Deletion error : ${error.message}`); // throw personalised error
       }
