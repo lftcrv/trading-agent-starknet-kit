@@ -7,11 +7,9 @@ import { authenticate } from '../utils/paradex-ts/api';
 import {
   getAccount,
   getParadexConfig,
-  ParadexAuthenticationError,
-  sendTradingInfo,
+  ParadexAuthenticationError
 } from '../utils/utils';
 import { ParadexOrderError } from '../interfaces/errors';
-import { getContainerId } from '../../leftcurve/utils/getContainerId';
 
 export class POService {
   public formatSize(size: number): string {
@@ -36,7 +34,6 @@ export class POService {
 
       const timestamp = Date.now();
 
-      // Format the order details with proper price and size formatting, todo should adapt to each crypto for rounding decimals
       const formattedOrderDetails: Record<string, string> = {
         market: orderDetails.market,
         side: orderDetails.side,
@@ -95,8 +92,6 @@ export const paradexPlaceOrderLimit = async (
   const service = new POService();
   try {
     const config = await getParadexConfig();
-
-    // Initialize account
     const account = await getAccount();
 
     try {
@@ -110,7 +105,6 @@ export const paradexPlaceOrderLimit = async (
     }
     console.info('Authentication successful');
 
-    // Convert to order parameters with proper formatting
     const orderParams: PlaceOrderParams = {
       market: params.market,
       side:
@@ -126,29 +120,9 @@ export const paradexPlaceOrderLimit = async (
 
     console.info('Placing order with params:', orderParams);
 
-    // Place the order
     const result = await service.placeOrder(config, account, orderParams);
 
     if (result) {
-      // Send trading info to backend
-      const tradeObject = {
-        tradeId: result.id ?? "0",
-        tradeType: "paradexPlaceOrderLimit",
-        trade: {
-          market: result.market,
-          side: result.side,
-          type: result.type,
-          size: result.size,
-          price: result.price,
-          instruction: result.instruction,
-          explanation: params.explanation ?? '',
-        },
-      };
-      const tradingInfoDto = {
-        runtimeAgentId: getContainerId(),
-        information: tradeObject,
-      };
-      await sendTradingInfo(tradingInfoDto);
       console.log('Order placed successfully:', result);
       console.log('explanation :', params.explanation);
       return true;

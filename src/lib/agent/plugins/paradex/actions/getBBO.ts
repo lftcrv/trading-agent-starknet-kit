@@ -2,18 +2,8 @@ import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { SystemConfig } from '../interfaces/config';
 import { ParadexBBOError } from '../interfaces/errors';
 import { GetBBOParams } from '../interfaces/params';
-import { BBOResponse } from '../interfaces/results';
+import { BBOResponse, MarketMetrics } from '../interfaces/results';
 import { getParadexConfig } from '../utils/utils';
-
-interface MarketMetrics {
-  spread: number;
-  spreadPercentage: number;
-  lastBid: number;
-  lastAsk: number;
-  timestamp: number;
-}
-
-// Service class for BBO operations
 export class BBOService {
   private formatNumber(value: string, decimals: number = 2): string {
     try {
@@ -126,7 +116,6 @@ export const paradexGetBBO = async (
       };
     }
 
-    // Fetch BBO data for all markets
     const bboDataMap = new Map<string, BBOResponse>();
     for (const market of params.markets) {
       try {
@@ -145,7 +134,6 @@ export const paradexGetBBO = async (
       };
     }
 
-    // Format the response
     const formattedResponse = service.formatBBOResponse(bboDataMap);
     console.log(formattedResponse.text);
 

@@ -1,12 +1,12 @@
 import { executeSwap, fetchQuotes, QuoteRequest, Quote } from '@avnu/avnu-sdk';
 import { Account } from 'starknet';
 
-import { ApprovalService } from './approval';
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
-import { SwapParams, SwapResult } from '../types';
-import { DEFAULT_QUOTE_SIZE, SLIPPAGE_PERCENTAGE } from '../constants';
-import { TokenService } from './fetchTokens';
-import { getContainerId } from '../utils/getContainerId';
+import { SwapParams, SwapResult } from '../../types';
+import { getContainerId } from '../../utils/getContainerId';
+import { TokenService } from '../../../avnu/actions/fetchTokens';
+import { ApprovalService } from '../../../avnu/actions/approval';
+import { DEFAULT_QUOTE_SIZE, SLIPPAGE_PERCENTAGE } from '../../../avnu/constants';
 
 /**
  * Service handling token swap operations using AVNU SDK

@@ -57,19 +57,6 @@ export const getOpenOrdersSchema = z.object({
     .describe('Optional market to filter orders, e.g., "BTC-USD-PERP"'),
 });
 
-export const getMarketDetailsSchema = z.object({
-  market: z
-    .string()
-    .describe('The market symbol to get details for, e.g., "BTC-USD-PERP"'),
-});
-
-export const getMarketTradingInfoSchema = z.object({
-  markets: z
-    .union([z.string(), z.array(z.string())])
-    .describe(
-      'Single market symbol or array of market symbols, e.g., "BTC-USD-PERP" or ["BTC-USD-PERP", "ETH-USD-PERP"]'
-    ),
-});
 
 export const getBalanceSchema = z.object({});
 

@@ -5,11 +5,9 @@ import {
   getAccount,
   getParadexConfig,
   ParadexAuthenticationError,
-  sendTradingInfo,
 } from '../utils/utils';
 import { ParadexCancelError } from '../interfaces/errors';
 import { CancelOrderParams } from '../interfaces/params';
-import { getContainerId } from '../../leftcurve/utils/getContainerId';
 
 export class CancelOrderService {
   async cancelOrder(
@@ -84,16 +82,6 @@ export const paradexCancelOrder = async (
     // Cancel the order
     const result = await service.cancelOrder(config, account, params.orderId);
     if (result) {
-      const tradeObject = {
-        tradeId: params.orderId,
-        tradeType: "paradexCancelOrder",
-        explanation: params.explanation ?? "",
-      };
-      const tradingInfoDto = {
-        runtimeAgentId: getContainerId(),
-        information: tradeObject,
-      };
-      await sendTradingInfo(tradingInfoDto);
       console.log('Order cancelled successfully');
       console.log('explanation :', params.explanation);
       return true;

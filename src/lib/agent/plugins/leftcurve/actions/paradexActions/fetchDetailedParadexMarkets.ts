@@ -1,11 +1,7 @@
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
-import { SystemConfig } from '../interfaces/config';
-import { ParadexMarketError } from '../interfaces/errors';
-import { GetMarketDetailsParams } from '../interfaces/params';
-import { MarketInfo, MarketResponse } from '../interfaces/results';
-import { getParadexConfig } from '../utils/utils';
+import { GetMarketDetailsParams, MarketInfo, MarketResponse, ParadexMarketError, SystemConfig } from '../../interfaces';
+import { getParadexConfig } from '../../utils/getParadexConfig';
 
-// Service class for market operations
 export class MarketDetailsService {
   public formatMarketDetails(market: MarketInfo): string {
     const formatPercentage = (value: string) =>
