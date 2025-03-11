@@ -1,8 +1,8 @@
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
 import { RpcProvider, Contract } from 'starknet';
-import { STARKNET_TOKENS } from '../constants';
-import { WalletParams } from '../types';
 import * as dotenv from 'dotenv';
+import { STARKNET_TOKENS } from '../../constants';
+import { WalletParams } from '../../types';
 
 dotenv.config();
 

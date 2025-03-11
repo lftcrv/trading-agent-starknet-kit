@@ -2,8 +2,6 @@ import { StarknetToolRegistry } from 'src/lib/agent/tools/tools';
 import {
   cancelOrderSchema,
   getBBOSchema,
-  getMarketDetailsSchema,
-  getMarketTradingInfoSchema,
   getOpenOrdersSchema,
   getOpenPositionsSchema,
   listMarketsSchema,
@@ -17,11 +15,8 @@ import { paradexGetOpenOrders } from '../actions/fetchOpenOrders';
 import { paradexGetOpenPositions } from '../actions/fetchOpenPositions';
 import { paradexGetBalance } from '../actions/fetchAccountBalance';
 import { paradexGetBBO } from '../actions/getBBO';
-import { paradexGetMarketDetails } from '../actions/fetchDetailedParadexMarkets';
 import { getBalanceSchema } from '../../core/token/schema';
-import { paradexGetMarketTradingInfo } from '../actions/fetchBasicParadexMarkets';
 import { paradexListMarkets } from '../actions/listMarketsOnParadex';
-import { getAnalysisParadex } from '../actions/fetchBackendAnalysis';
 
 export const registerParadexTools = () => {
   StarknetToolRegistry.registerTool({
@@ -86,36 +81,10 @@ export const registerParadexTools = () => {
   });
 
   StarknetToolRegistry.registerTool({
-    name: 'get_market_details',
-    plugins: 'paradex',
-    description:
-      'Get maximum detailed information about a specific market on Paradex',
-    schema: getMarketDetailsSchema,
-    execute: paradexGetMarketDetails,
-  });
-
-  StarknetToolRegistry.registerTool({
-    name: 'get_market_trading_info',
-    plugins: 'paradex',
-    description:
-      'Get essential trading information for one or multiple markets on Paradex',
-    schema: getMarketTradingInfoSchema,
-    execute: paradexGetMarketTradingInfo,
-  });
-
-  StarknetToolRegistry.registerTool({
     name: 'list_markets',
     plugins: 'paradex',
     description: 'Get a list of all available market symbols on Paradex',
     schema: listMarketsSchema,
     execute: paradexListMarkets,
-  });
-
-  StarknetToolRegistry.registerTool({
-    name: 'get_analysis_paradex',
-    plugins: 'paradex',
-    description: 'Get the latest analysis of Paradex.',
-    schema: listMarketsSchema,
-    execute: getAnalysisParadex,
   });
 };

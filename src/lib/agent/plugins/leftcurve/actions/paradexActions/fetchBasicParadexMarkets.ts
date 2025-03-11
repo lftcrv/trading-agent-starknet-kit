@@ -1,9 +1,11 @@
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
-import { MarketTradingInfoBasic } from '../interfaces/results';
-import { SystemConfig } from '../interfaces/config';
-import { GetMarketTradingInfoParams } from '../interfaces/params';
-import { getParadexConfig } from '../utils/utils';
-import { ParadexMarketInfoBasicError } from '../interfaces/errors';
+import {
+  GetMarketTradingInfoParams,
+  MarketTradingInfoBasic,
+  ParadexMarketInfoBasicError,
+  SystemConfig,
+} from '../../interfaces';
+import { getParadexConfig } from '../../utils/getParadexConfig';
 
 export class MarketTradingInfoService {
   private formatMarketInfo(market: MarketTradingInfoBasic): string {
@@ -104,7 +106,6 @@ Funding:
   }
 }
 
-// Main function to get market trading info
 export const paradexGetMarketTradingInfo = async (
   agent: StarknetAgentInterface,
   params: GetMarketTradingInfoParams

@@ -48,26 +48,6 @@ export class ParadexBBOError extends Error {
   }
 }
 
-export class ParadexMarketError extends Error {
-  constructor(
-    message: string,
-    public details?: any
-  ) {
-    super(message);
-    this.name = 'ParadexMarketError';
-  }
-}
-
-export class ParadexMarketInfoBasicError extends Error {
-  constructor(
-    message: string,
-    public details?: any
-  ) {
-    super(message);
-    this.name = 'ParadexMarketInfoError';
-  }
-}
-
 export class ParadexListMarketsError extends Error {
   constructor(
     message: string,

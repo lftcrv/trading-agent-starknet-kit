@@ -4,7 +4,6 @@ import { ListMarketResponse } from '../interfaces/results';
 import { getParadexConfig } from '../utils/utils';
 import { ParadexListMarketsError } from '../interfaces/errors';
 
-// Service class for listing markets
 export class ListMarketsService {
   async fetchMarkets(config: SystemConfig): Promise<string[]> {
     try {
@@ -51,16 +50,11 @@ export class ListMarketsService {
   }
 }
 
-// Main function to list markets
 export const paradexListMarkets = async (agent: StarknetAgentInterface) => {
   const service = new ListMarketsService();
   try {
     const config = await getParadexConfig();
-
-    // Fetch and sort markets
     const markets = await service.fetchMarkets(config);
-
-    // Format the response
     const formattedResponse = service.formatResponse(markets);
     console.log('Markets list retrieved successfully');
 

@@ -38,11 +38,3 @@ export interface GetOpenPositionsParams {
 export interface GetBBOParams {
   markets: string[]; // Array of market symbols to fetch BBO data for
 }
-
-export interface GetMarketDetailsParams {
-  market: string;
-}
-
-export interface GetMarketTradingInfoParams {
-  markets: string | string[];
-}
