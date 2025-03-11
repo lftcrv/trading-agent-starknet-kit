@@ -16,9 +16,7 @@ import { paradexGetOpenPositions } from '../actions/fetchOpenPositions';
 import { paradexGetBalance } from '../actions/fetchAccountBalance';
 import { paradexGetBBO } from '../actions/getBBO';
 import { getBalanceSchema } from '../../core/token/schema';
-import { paradexGetMarketTradingInfo } from '../../leftcurve/actions/paradexActions/fetchBasicParadexMarkets';
 import { paradexListMarkets } from '../actions/listMarketsOnParadex';
-import { getAnalysisParadex } from '../../leftcurve/actions/paradexActions/fetchBackendAnalysis';
 
 export const registerParadexTools = () => {
   StarknetToolRegistry.registerTool({
@@ -88,13 +86,5 @@ export const registerParadexTools = () => {
     description: 'Get a list of all available market symbols on Paradex',
     schema: listMarketsSchema,
     execute: paradexListMarkets,
-  });
-
-  StarknetToolRegistry.registerTool({
-    name: 'get_analysis_paradex',
-    plugins: 'paradex',
-    description: 'Get the latest analysis of Paradex.',
-    schema: listMarketsSchema,
-    execute: getAnalysisParadex,
   });
 };
