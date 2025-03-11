@@ -20,6 +20,7 @@ import { TelegramInterface } from '../plugins/telegram/interfaces';
 import { registerArtpeaceTools } from '../plugins/artpeace/tools';
 import { registerParadexTools } from '../plugins/paradex/tools';
 import { registerLftcrvTools } from '../plugins/leftcurve/tools';
+import { registerLayerswapTools } from '../plugins/layerswap/tools';
 
 export interface StarknetAgentInterface {
   getAccountCredentials: () => {
@@ -94,6 +95,8 @@ export const registerTools = () => {
   registerAvnuTools();
 
   registerLftcrvTools();
+
+  registerLayerswapTools();
 
   registerParadexTools();
 

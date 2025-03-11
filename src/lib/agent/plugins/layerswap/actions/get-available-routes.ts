@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { StarknetAgentInterface } from '../../../tools/tools';
 import { GetAvailableRoutesParams } from '../schema';
-import { LayerswapManager } from './layerswap-manager';
+import { getLayerswapApiKey, getLayerswapBaseUrl } from '../utils/config';
 
 /**
  * Gets available routes for bridging
@@ -15,24 +15,15 @@ export const layerswap_get_available_routes = async (
   params: GetAvailableRoutesParams
 ) => {
   try {
-    // @ts-ignore - For TypeScript, we need to add these methods to the agent interface
-    const apiKey = agent.getLayerswapApiKey();
-    // @ts-ignore
-    const baseUrl = agent.getLayerswapBaseUrl();
+    const apiKey = getLayerswapApiKey();
+    const baseUrl = getLayerswapBaseUrl();
 
-    if (!apiKey) {
-      throw new Error('Layerswap API key not found in agent configuration');
-    }
-
-    // Just need the API key and base URL for this operation
-    const layerswapBaseUrl = baseUrl || 'https://api.layerswap.io/api/v2';
-
-    const response = await axios.get(`${layerswapBaseUrl}/available_networks`, {
+    const response = await axios.get(`${baseUrl}/networks`, {
       headers: {
         'X-LS-APIKEY': apiKey,
       },
     });
-
+    console.log("response:", response)
     // Filter by source network
     let routes = response.data.filter(
       (route: any) => route.internal_name === params.source_network

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { StarknetAgentInterface } from '../../../tools/tools';
 import { Account, Provider, CallData, uint256 } from 'starknet';
 import { ethers } from 'ethers';
 import {
@@ -8,6 +9,7 @@ import {
   DepositAction,
 } from '../types';
 import { GetSwapQuoteParams } from '../schema';
+import { getLayerswapApiKey, getLayerswapBaseUrl } from '../utils/config';
 
 /**
  * Manages Layerswap API interactions for bridging assets
@@ -15,93 +17,59 @@ import { GetSwapQuoteParams } from '../schema';
 export class LayerswapManager {
   private baseUrl: string;
   private apiKey: string;
-  private starknetPrivateKey: string | null = null;
-  private starknetAddress: string | null = null;
-  private provider: Provider | null = null;
+  private agent: StarknetAgentInterface;
 
   /**
    * Creates a new Layerswap Manager
    *
-   * @param {string} apiKey - Layerswap API key
-   * @param {string} baseUrl - API base URL
+   * @param {StarknetAgentInterface} agent - Starknet agent with credentials
    */
-  constructor(
-    apiKey: string,
-    baseUrl: string = LayerswapConstant.DEFAULT_BASE_URL
-  ) {
-    this.apiKey = apiKey;
-    this.baseUrl = baseUrl;
+  constructor(agent: StarknetAgentInterface) {
+    this.agent = agent;
+    this.apiKey = getLayerswapApiKey();
+    this.baseUrl = getLayerswapBaseUrl();
   }
 
   /**
-   * Sets the Starknet account details for transactions
-   *
-   * @param {string} privateKey - Starknet private key
-   * @param {string} address - Starknet address
-   * @returns {LayerswapManager} - Returns this instance for method chaining
-   */
-  setStarknetAccount(privateKey: string, address: string): LayerswapManager {
-    this.starknetPrivateKey = privateKey;
-    this.starknetAddress = address;
-    return this;
-  }
-
-  /**
-   * Gets the Starknet address
+   * Gets the Starknet address from agent credentials
    *
    * @returns {string} - The Starknet address
-   * @throws {Error} - If Starknet address is not set
    */
   getStarknetAddress(): string {
-    if (!this.starknetAddress) {
-      throw new Error(
-        'Starknet address not set. Call setStarknetAccount first.'
-      );
-    }
-    return this.starknetAddress;
+    const { accountPublicKey } = this.agent.getAccountCredentials();
+    return accountPublicKey;
   }
 
   /**
-   * Gets the Starknet private key
+   * Gets the Starknet private key from agent credentials
    *
    * @returns {string} - The Starknet private key
-   * @throws {Error} - If Starknet private key is not set
    */
   getStarknetPrivateKey(): string {
-    if (!this.starknetPrivateKey) {
-      throw new Error(
-        'Starknet private key not set. Call setStarknetAccount first.'
-      );
-    }
-    return this.starknetPrivateKey;
+    const { accountPrivateKey } = this.agent.getAccountCredentials();
+    return accountPrivateKey;
   }
 
   /**
-   * Gets the Starknet Provider
+   * Gets the Starknet Provider from agent
    *
    * @returns {Provider} - Starknet Provider instance
    */
   getProvider(): Provider {
-    if (!this.provider) {
-      this.provider = new Provider({
-        nodeUrl: 'https://alpha-mainnet.starknet.io',
-      });
-    }
-    return this.provider;
+    return this.agent.getProvider();
   }
 
   /**
    * Creates a Starknet Account instance for transaction execution
    *
    * @returns {Account} - Starknet Account instance
-   * @throws {Error} - If Starknet account details are not set
    */
   createAccount(): Account {
-    const privateKey = this.getStarknetPrivateKey();
-    const address = this.getStarknetAddress();
+    const { accountPrivateKey, accountPublicKey } =
+      this.agent.getAccountCredentials();
     const provider = this.getProvider();
 
-    return new Account(provider, address, privateKey);
+    return new Account(provider, accountPublicKey, accountPrivateKey);
   }
 
   /**
@@ -207,8 +175,8 @@ export class LayerswapManager {
   async createSwap(swapInput: SwapInput): Promise<SwapResponse> {
     try {
       // Use the stored Starknet address if source_address isn't provided
-      if (!swapInput.source_address && this.starknetAddress) {
-        swapInput.source_address = this.starknetAddress;
+      if (!swapInput.source_address) {
+        swapInput.source_address = this.getStarknetAddress();
       }
 
       const payload = {

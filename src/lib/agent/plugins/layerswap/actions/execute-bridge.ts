@@ -20,29 +20,8 @@ export const layerswap_execute_bridge = async (
   params: ExecuteBridgeParams
 ) => {
   try {
-    // Get configuration from agent
-    // @ts-ignore - For TypeScript, we need to add these methods to the agent interface
-    const apiKey = agent.getLayerswapApiKey();
-    // @ts-ignore
-    const baseUrl = agent.getLayerswapBaseUrl();
-    // @ts-ignore
-    const starknetPrivateKey = agent.getStarknetPrivateKey();
-    // @ts-ignore
-    const starknetAddress = agent.getStarknetAddress();
-
-    if (!apiKey) {
-      throw new Error('Layerswap API key not found in agent configuration');
-    }
-
-    if (!starknetPrivateKey || !starknetAddress) {
-      throw new Error(
-        'Starknet account details not found in agent configuration'
-      );
-    }
-
-    // Initialize the LayerswapManager with the agent's credentials and account details
-    const layerswapManager = new LayerswapManager(apiKey, baseUrl);
-    layerswapManager.setStarknetAccount(starknetPrivateKey, starknetAddress);
+    // Initialize the LayerswapManager with the agent
+    const layerswapManager = new LayerswapManager(agent);
 
     // Step 1: Check route limits
     const limits = await layerswapManager.getLimits(
@@ -76,13 +55,14 @@ export const layerswap_execute_bridge = async (
 
     // Step 3: Create swap
     const referenceId = params.reference_id || `bridge-${Date.now()}`;
+    const starknetAddress = layerswapManager.getStarknetAddress();
 
     const swapInput: SwapInput = {
       source_network: params.source_network,
       source_token: params.source_token,
       destination_network: params.destination_network,
       destination_token: params.destination_token,
-      source_address: starknetAddress, // Use the address from agent config
+      source_address: starknetAddress,
       destination_address: params.destination_address,
       amount: params.amount,
       refuel: params.refuel || false,

@@ -15,41 +15,15 @@ export const layerswap_create_swap = async (
   params: CreateSwapParams
 ) => {
   try {
-    // @ts-ignore - For TypeScript, we need to add these methods to the agent interface
-    const apiKey = agent.getLayerswapApiKey();
-    // @ts-ignore
-    const baseUrl = agent.getLayerswapBaseUrl();
-
-    if (!apiKey) {
-      throw new Error('Layerswap API key not found in agent configuration');
-    }
-
-    const layerswapManager = new LayerswapManager(apiKey, baseUrl);
-
-    // If we have Starknet details, set them
-    try {
-      // @ts-ignore
-      const starknetPrivateKey = agent.getStarknetPrivateKey();
-      // @ts-ignore
-      const starknetAddress = agent.getStarknetAddress();
-
-      if (starknetPrivateKey && starknetAddress) {
-        layerswapManager.setStarknetAccount(
-          starknetPrivateKey,
-          starknetAddress
-        );
-      }
-    } catch (e) {
-      // Continue even if we can't set Starknet details
-      console.warn('Could not set Starknet account details:', e.message);
-    }
+    // Initialize the LayerswapManager with the agent
+    const layerswapManager = new LayerswapManager(agent);
 
     const swapInput: SwapInput = {
       source_network: params.source_network,
       source_token: params.source_token,
       destination_network: params.destination_network,
       destination_token: params.destination_token,
-      source_address: params.source_address,
+      source_address: params.source_address, // This will be overridden by LayerswapManager if not provided
       destination_address: params.destination_address,
       amount: params.amount,
       refuel: params.refuel || false,

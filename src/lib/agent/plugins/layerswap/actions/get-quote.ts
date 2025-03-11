@@ -14,26 +14,8 @@ export const layerswap_get_quote = async (
   params: GetSwapQuoteParams
 ) => {
   try {
-    // @ts-ignore - For TypeScript, we need to add these methods to the agent interface
-    const apiKey = agent.getLayerswapApiKey();
-    // @ts-ignore
-    const baseUrl = agent.getLayerswapBaseUrl();
-    // @ts-ignore
-    const starknetAddress = agent.getStarknetAddress();
-
-    if (!apiKey) {
-      throw new Error('Layerswap API key not found in agent configuration');
-    }
-
-    const layerswapManager = new LayerswapManager(apiKey, baseUrl);
-
-    if (starknetAddress) {
-      layerswapManager.setStarknetAccount(
-        // @ts-ignore
-        agent.getStarknetPrivateKey(),
-        starknetAddress
-      );
-    }
+    // Initialize the LayerswapManager with the agent
+    const layerswapManager = new LayerswapManager(agent);
 
     const quote = await layerswapManager.getQuote(params);
 
