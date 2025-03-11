@@ -136,36 +136,47 @@ export class LayerswapManager {
    * Gets a quote for a swap
    *
    * @param {GetSwapQuoteParams} params - Quote parameters
-   * @returns {Promise<{fee: number, destination_amount: number}>} Quote details
+   * @returns {Promise<any>} Quote details
    */
-  async getQuote(
-    params: GetSwapQuoteParams & { source_address?: string }
-  ): Promise<{ fee: number; destination_amount: number }> {
-    try {
-      const sourceAddress = params.source_address || this.getStarknetAddress();
+  async getQuote(params: GetSwapQuoteParams): Promise<any> {
+    const {
+      source_network,
+      source_token,
+      destination_network,
+      destination_token,
+      amount,
+      refuel = false,
+    } = params;
 
-      const response = await axios.get(`${this.baseUrl}/quote`, {
-        params: {
-          source_network: params.source_network,
-          source_token: params.source_token,
-          destination_network: params.destination_network,
-          destination_token: params.destination_token,
-          source_address: sourceAddress,
-          amount: params.amount,
-          refuel: params.refuel,
-          use_deposit_address: true,
-        },
+    // Build query parameters
+    const queryParams = new URLSearchParams({
+      source_network,
+      source_token,
+      destination_network,
+      destination_token,
+      amount: amount.toString(),
+      refuel: refuel.toString(),
+    });
+
+    // Make the API request
+    const response = await fetch(
+      `${this.baseUrl}/quote?${queryParams.toString()}`,
+      {
+        method: 'GET',
         headers: {
+          accept: 'application/json',
           'X-LS-APIKEY': this.apiKey,
         },
-      });
-      return response.data;
-    } catch (error) {
-      console.error('Error getting quote:', error);
-      throw error;
-    }
-  }
+      }
+    );
 
+    if (!response.ok) {
+      throw new Error(`Failed to get quote: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data.data;
+  }
   /**
    * Creates a new swap
    *

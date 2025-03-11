@@ -16,9 +16,7 @@ export const layerswap_get_quote = async (
   try {
     // Initialize the LayerswapManager with the agent
     const layerswapManager = new LayerswapManager(agent);
-
     const quote = await layerswapManager.getQuote(params);
-
     return {
       status: 'success',
       quote,
