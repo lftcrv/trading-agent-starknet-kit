@@ -7,7 +7,7 @@ import { authenticate } from '../utils/paradex-ts/api';
 import {
   getAccount,
   getParadexConfig,
-  ParadexAuthenticationError
+  ParadexAuthenticationError,
 } from '../utils/utils';
 import { ParadexOrderError } from '../interfaces/errors';
 import { time } from 'console';

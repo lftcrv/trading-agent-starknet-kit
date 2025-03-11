@@ -6,7 +6,10 @@ import { SwapParams, SwapResult } from '../../types';
 import { getContainerId } from '../../utils/getContainerId';
 import { TokenService } from '../../../avnu/actions/fetchTokens';
 import { ApprovalService } from '../../../avnu/actions/approval';
-import { DEFAULT_QUOTE_SIZE, SLIPPAGE_PERCENTAGE } from '../../../avnu/constants';
+import {
+  DEFAULT_QUOTE_SIZE,
+  SLIPPAGE_PERCENTAGE,
+} from '../../../avnu/constants';
 
 /**
  * Service handling token swap operations using AVNU SDK

@@ -1,11 +1,18 @@
-import { StarknetAgentInterface } from "src/lib/agent/tools/tools";
-import { PlaceOrderMarketParams, PlaceOrderParams } from "../../../paradex/interfaces/params";
-import { POService } from "../../../paradex/actions/placeOrderMarket";
-import { getAccount, getParadexConfig, ParadexAuthenticationError } from "../../../paradex/utils/utils";
-import { authenticate } from "../../../paradex/utils/paradex-ts/api";
-import { getContainerId } from "../../utils/getContainerId";
-import { sendTradingInfo } from "../../utils/sendTradingInfos";
-import { ParadexOrderError } from "../../../paradex/interfaces/errors";
+import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
+import {
+  PlaceOrderMarketParams,
+  PlaceOrderParams,
+} from '../../../paradex/interfaces/params';
+import { POService } from '../../../paradex/actions/placeOrderMarket';
+import {
+  getAccount,
+  getParadexConfig,
+  ParadexAuthenticationError,
+} from '../../../paradex/utils/utils';
+import { authenticate } from '../../../paradex/utils/paradex-ts/api';
+import { getContainerId } from '../../utils/getContainerId';
+import { sendTradingInfo } from '../../utils/sendTradingInfos';
+import { ParadexOrderError } from '../../../paradex/interfaces/errors';
 
 export const paradexPlaceOrderMarket = async (
   agent: StarknetAgentInterface,
@@ -43,8 +50,8 @@ export const paradexPlaceOrderMarket = async (
 
     if (result) {
       const tradeObject = {
-        tradeId: result.id ?? "0",
-        tradeType: "paradexPlaceOrderMarket",
+        tradeId: result.id ?? '0',
+        tradeType: 'paradexPlaceOrderMarket',
         trade: {
           market: result.market,
           side: result.side,

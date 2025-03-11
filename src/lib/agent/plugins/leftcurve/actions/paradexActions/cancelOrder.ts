@@ -1,11 +1,15 @@
-import { StarknetAgentInterface } from "src/lib/agent/tools/tools";
-import { CancelOrderParams } from "../../../paradex/interfaces/params";
-import { CancelOrderService } from "../../../paradex/actions/cancelOrder";
-import { getAccount, getParadexConfig, ParadexAuthenticationError } from "../../../paradex/utils/utils";
-import { authenticate } from "../../../paradex/utils/paradex-ts/api";
-import { getContainerId } from "../../utils/getContainerId";
-import { sendTradingInfo } from "../../utils/sendTradingInfos";
-import { ParadexCancelError } from "../../../paradex/interfaces/errors";
+import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
+import { CancelOrderParams } from '../../../paradex/interfaces/params';
+import { CancelOrderService } from '../../../paradex/actions/cancelOrder';
+import {
+  getAccount,
+  getParadexConfig,
+  ParadexAuthenticationError,
+} from '../../../paradex/utils/utils';
+import { authenticate } from '../../../paradex/utils/paradex-ts/api';
+import { getContainerId } from '../../utils/getContainerId';
+import { sendTradingInfo } from '../../utils/sendTradingInfos';
+import { ParadexCancelError } from '../../../paradex/interfaces/errors';
 
 export const paradexCancelOrder = async (
   agent: StarknetAgentInterface,
@@ -31,8 +35,8 @@ export const paradexCancelOrder = async (
     if (result) {
       const tradeObject = {
         tradeId: params.orderId,
-        tradeType: "paradexCancelOrder",
-        explanation: params.explanation ?? "",
+        tradeType: 'paradexCancelOrder',
+        explanation: params.explanation ?? '',
       };
       const tradingInfoDto = {
         runtimeAgentId: getContainerId(),

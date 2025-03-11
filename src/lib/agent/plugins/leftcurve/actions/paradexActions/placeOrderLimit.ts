@@ -1,11 +1,18 @@
-import { StarknetAgentInterface } from "src/lib/agent/tools/tools";
-import { PlaceOrderLimitParams, PlaceOrderParams } from "../../../paradex/interfaces/params";
-import { POService } from "../../../paradex/actions/placeOrderLimit";
-import { getAccount, getParadexConfig, ParadexAuthenticationError } from "../../../paradex/utils/utils";
-import { authenticate } from "../../../paradex/utils/paradex-ts/api";
-import { getContainerId } from "../../utils/getContainerId";
-import { sendTradingInfo } from "../../utils/sendTradingInfos";
-import { ParadexOrderError } from "../../../paradex/interfaces/errors";
+import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
+import {
+  PlaceOrderLimitParams,
+  PlaceOrderParams,
+} from '../../../paradex/interfaces/params';
+import { POService } from '../../../paradex/actions/placeOrderLimit';
+import {
+  getAccount,
+  getParadexConfig,
+  ParadexAuthenticationError,
+} from '../../../paradex/utils/utils';
+import { authenticate } from '../../../paradex/utils/paradex-ts/api';
+import { getContainerId } from '../../utils/getContainerId';
+import { sendTradingInfo } from '../../utils/sendTradingInfos';
+import { ParadexOrderError } from '../../../paradex/interfaces/errors';
 
 export const paradexPlaceOrderLimit = async (
   agent: StarknetAgentInterface,
@@ -44,8 +51,8 @@ export const paradexPlaceOrderLimit = async (
 
     if (result) {
       const tradeObject = {
-        tradeId: result.id ?? "0",
-        tradeType: "paradexPlaceOrderLimit",
+        tradeId: result.id ?? '0',
+        tradeType: 'paradexPlaceOrderLimit',
         trade: {
           market: result.market,
           side: result.side,

@@ -57,7 +57,6 @@ export const getOpenOrdersSchema = z.object({
     .describe('Optional market to filter orders, e.g., "BTC-USD-PERP"'),
 });
 
-
 export const getBalanceSchema = z.object({});
 
 export const getBBOSchema = z.object({

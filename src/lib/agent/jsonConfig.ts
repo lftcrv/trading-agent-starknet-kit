@@ -131,7 +131,12 @@ export const validateConfig = (config: JsonConfig) => {
 
 const checkParseJson = (agent_config_name: string): JsonConfig | undefined => {
   try {
-    const filePath = path.join(process.cwd(), 'config', 'agents', agent_config_name);
+    const filePath = path.join(
+      process.cwd(),
+      'config',
+      'agents',
+      agent_config_name
+    );
     const contents = fs.readFileSync(filePath, 'utf-8');
     const json = JSON.parse(contents);
 

@@ -52,7 +52,6 @@ export interface GetMarketTradingInfoParams {
   markets: string | string[];
 }
 
-
 export class ParadexMarketError extends Error {
   constructor(
     message: string,

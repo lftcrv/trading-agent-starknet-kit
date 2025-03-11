@@ -17,7 +17,13 @@ import { paradexGetMarketTradingInfo } from '../actions/paradexActions/fetchBasi
 import { paradexCancelOrder } from '../actions/paradexActions/cancelOrder';
 import { paradexPlaceOrderMarket } from '../actions/paradexActions/placeOrderMarket';
 import { paradexPlaceOrderLimit } from '../actions/paradexActions/placeOrderLimit';
-import { getBalanceSchema, getBBOSchema, getOpenOrdersSchema, getOpenPositionsSchema, listMarketsSchema } from '../../paradex/schema';
+import {
+  getBalanceSchema,
+  getBBOSchema,
+  getOpenOrdersSchema,
+  getOpenPositionsSchema,
+  listMarketsSchema,
+} from '../../paradex/schema';
 import { paradexGetOpenOrders } from '../../paradex/actions/fetchOpenOrders';
 import { paradexGetOpenPositions } from '../../paradex/actions/fetchOpenPositions';
 import { paradexGetBalance } from '../../paradex/actions/fetchAccountBalance';
@@ -46,7 +52,8 @@ export const registerLftcrvTools = () => {
   StarknetToolRegistry.registerTool({
     name: 'swap_tokens',
     plugins: 'lftcrv',
-    description: 'Swap a specified amount of one token for another token, on AVNU',
+    description:
+      'Swap a specified amount of one token for another token, on AVNU',
     schema: swapSchema,
     execute: swapTokens,
   });
@@ -68,7 +75,7 @@ export const registerLftcrvTools = () => {
     schema: getMarketTradingInfoSchema,
     execute: paradexGetMarketTradingInfo,
   });
-  
+
   StarknetToolRegistry.registerTool({
     name: 'place_order_limit_paradex',
     plugins: 'lftcrv',
@@ -145,5 +152,4 @@ export const registerLftcrvTools = () => {
     schema: listMarketsSchema,
     execute: getAnalysisParadex,
   });
-  
 };

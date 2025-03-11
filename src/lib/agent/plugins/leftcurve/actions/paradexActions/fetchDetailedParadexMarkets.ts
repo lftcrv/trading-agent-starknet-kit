@@ -1,5 +1,11 @@
 import { StarknetAgentInterface } from 'src/lib/agent/tools/tools';
-import { GetMarketDetailsParams, MarketInfo, MarketResponse, ParadexMarketError, SystemConfig } from '../../interfaces';
+import {
+  GetMarketDetailsParams,
+  MarketInfo,
+  MarketResponse,
+  ParadexMarketError,
+  SystemConfig,
+} from '../../interfaces';
 import { getParadexConfig } from '../../utils/getParadexConfig';
 
 export class MarketDetailsService {
