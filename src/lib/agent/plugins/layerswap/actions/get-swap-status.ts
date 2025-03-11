@@ -1,14 +1,13 @@
 import { StarknetAgentInterface } from '../../../tools/tools';
 import { GetSwapStatusParams } from '../schema';
-import { SwapResponse } from '../types';
 import { LayerswapManager } from './layerswap-manager';
 
 /**
  * Gets the status of a swap
  *
  * @param {StarknetAgentInterface} agent - Starknet agent
- * @param {GetSwapStatusParams} params - Status request parameters
- * @returns {Promise<{status: string, swap?: SwapResponse, error?: any}>} Swap status
+ * @param {GetSwapStatusParams} params - Parameters with swap ID
+ * @returns {Promise<{status: string, swap?: any, error?: any}>} Swap status
  */
 export const layerswap_get_swap_status = async (
   agent: StarknetAgentInterface,

@@ -7,6 +7,7 @@ import {
   SwapInput,
   SwapResponse,
   DepositAction,
+  SwapResponseData,
 } from '../types';
 import { GetSwapQuoteParams } from '../schema';
 import { getLayerswapApiKey, getLayerswapBaseUrl } from '../utils/config';
@@ -185,25 +186,55 @@ export class LayerswapManager {
    */
   async createSwap(swapInput: SwapInput): Promise<SwapResponse> {
     try {
-      // Use the stored Starknet address if source_address isn't provided
-      if (!swapInput.source_address) {
-        swapInput.source_address = this.getStarknetAddress();
-      }
-
+      // Create a minimal payload with only required fields
       const payload = {
-        ...swapInput,
-        use_deposit_address: swapInput.use_deposit_address !== false,
+        source_network: swapInput.source_network,
+        source_token: swapInput.source_token,
+        destination_network: swapInput.destination_network,
+        destination_token: swapInput.destination_token,
+        destination_address: swapInput.destination_address,
+        amount: swapInput.amount,
       };
+
+      // // Add optional fields only if they are provided
+      // if (swapInput.refuel !== undefined) {
+      //   payload['refuel'] = swapInput.refuel;
+      // }
+
+      // if (swapInput.source_address) {
+      //   payload['source_address'] = swapInput.source_address;
+      // }
+
+      // if (swapInput.reference_id) {
+      //   payload['reference_id'] = swapInput.reference_id;
+      // }
+
+      // // The use_deposit_address might be causing issues, only add if needed and not false
+      // if (swapInput.use_deposit_address === true) {
+      //   payload['use_deposit_address'] = true;
+      // }
+
+      console.log(
+        'Creating swap with payload:',
+        JSON.stringify(payload, null, 2)
+      );
 
       const response = await axios.post(`${this.baseUrl}/swaps`, payload, {
         headers: {
           'X-LS-APIKEY': this.apiKey,
           'Content-Type': 'application/json',
+          Accept: 'application/json',
         },
       });
+
       return response.data;
     } catch (error) {
       console.error('Error creating swap:', error);
+      // If the error has a response, log it for better debugging
+      if (error.response) {
+        console.error('Response status:', error.response.status);
+        console.error('Response data:', error.response.data);
+      }
       throw error;
     }
   }
@@ -212,30 +243,53 @@ export class LayerswapManager {
    * Gets deposit actions for a swap
    *
    * @param {string} swapId - Swap identifier
-   * @param {string} sourceAddress - Source address
+   * @param {string} sourceAddress - Source address (required)
    * @returns {Promise<DepositAction[]>} Deposit instructions
    */
   async getDepositActions(
     swapId: string,
-    sourceAddress?: string
+    sourceAddress: string
   ): Promise<DepositAction[]> {
     try {
-      const address = sourceAddress || this.getStarknetAddress();
+      // Make sure we have a source address - it's required by the API
+      if (!sourceAddress) {
+        sourceAddress = this.getStarknetAddress();
+      }
+
+      // Remove 0x prefix if present to match API expectations
+      const formattedAddress = sourceAddress.startsWith('0x')
+        ? sourceAddress
+        : `0x${sourceAddress}`;
+
+      console.log(
+        `Getting deposit actions for swap ${swapId} with source address ${formattedAddress}`
+      );
 
       const response = await axios.get(
         `${this.baseUrl}/swaps/${swapId}/deposit_actions`,
         {
           params: {
-            source_address: address,
+            source_address: formattedAddress,
           },
           headers: {
             'X-LS-APIKEY': this.apiKey,
+            Accept: 'application/json',
           },
         }
       );
-      return response.data;
+
+      if (!response.data || !response.data.data) {
+        throw new Error('Invalid response format from deposit actions API');
+      }
+
+      return response.data.data;
     } catch (error) {
       console.error('Error getting deposit actions:', error);
+      // Improve error logging with response details
+      if (error.response) {
+        console.error('Response status:', error.response.status);
+        console.error('Response data:', error.response.data);
+      }
       throw error;
     }
   }
@@ -244,18 +298,34 @@ export class LayerswapManager {
    * Gets the status of a swap
    *
    * @param {string} swapId - Swap identifier
-   * @returns {Promise<SwapResponse>} Current swap status
+   * @returns {Promise<SwapResponseData>} Current swap status
    */
-  async getSwapStatus(swapId: string): Promise<SwapResponse> {
+  async getSwapStatus(swapId: string): Promise<SwapResponseData> {
     try {
       const response = await axios.get(`${this.baseUrl}/swaps/${swapId}`, {
         headers: {
           'X-LS-APIKEY': this.apiKey,
+          Accept: 'application/json',
         },
       });
-      return response.data;
+
+      // Check if the response has the expected structure
+      if (!response.data || !response.data.data || !response.data.data.swap) {
+        console.error(
+          'Unexpected response format from swap status API:',
+          response.data
+        );
+        throw new Error('Invalid response format from swap status API');
+      }
+
+      return response.data.data.swap;
     } catch (error) {
       console.error('Error getting swap status:', error);
+      // Add more detailed error logging
+      if (error.response) {
+        console.error('Response status:', error.response.status);
+        console.error('Response data:', error.response.data);
+      }
       throw error;
     }
   }

@@ -1,6 +1,6 @@
 import { StarknetAgentInterface } from '../../../tools/tools';
 import { CreateSwapParams } from '../schema';
-import { SwapInput, SwapResponse } from '../types';
+import { SwapInput, SwapResponseData } from '../types';
 import { LayerswapManager } from './layerswap-manager';
 
 /**
@@ -8,28 +8,35 @@ import { LayerswapManager } from './layerswap-manager';
  *
  * @param {StarknetAgentInterface} agent - Starknet agent
  * @param {CreateSwapParams} params - Swap parameters
- * @returns {Promise<{status: string, swap?: SwapResponse, error?: any}>} Created swap
+ * @returns {Promise<{status: string, swap?: SwapResponseData, error?: any}>} Created swap
  */
 export const layerswap_create_swap = async (
   agent: StarknetAgentInterface,
   params: CreateSwapParams
 ) => {
   try {
+    // Validate required parameters
+    if (!params.destination_address) {
+      throw new Error('destination_address is required');
+    }
+
     // Initialize the LayerswapManager with the agent
     const layerswapManager = new LayerswapManager(agent);
 
+    // Create minimal swap input to match API expectations
     const swapInput: SwapInput = {
       source_network: params.source_network,
       source_token: params.source_token,
       destination_network: params.destination_network,
       destination_token: params.destination_token,
-      source_address: params.source_address, // This will be overridden by LayerswapManager if not provided
       destination_address: params.destination_address,
       amount: params.amount,
-      refuel: params.refuel || false,
-      reference_id: params.reference_id,
-      use_deposit_address: true,
     };
+
+    // Add optional parameters if needed
+    if (params.refuel !== undefined) {
+      swapInput.refuel = params.refuel;
+    }
 
     const swap = await layerswapManager.createSwap(swapInput);
 

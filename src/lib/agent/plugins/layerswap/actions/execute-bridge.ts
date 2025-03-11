@@ -4,6 +4,7 @@ import {
   LayerswapConstant,
   SwapStatus,
   SwapInput,
+  SwapResponseData,
   SwapResponse,
 } from '../types';
 import { LayerswapManager } from './layerswap-manager';
@@ -32,6 +33,8 @@ export const layerswap_execute_bridge = async (
       params.refuel
     );
 
+    console.log('limits:', limits);
+
     // Validate amount
     if (
       params.amount < limits.min_amount ||
@@ -50,32 +53,38 @@ export const layerswap_execute_bridge = async (
       destination_token: params.destination_token,
       amount: params.amount,
       refuel: params.refuel,
-      // source_address will be provided by the manager
     });
+
+    console.log('quote:', quote);
 
     // Step 3: Create swap
     const referenceId = params.reference_id || `bridge-${Date.now()}`;
-    const starknetAddress = layerswapManager.getStarknetAddress();
+    console.log('referenceId:', referenceId);
 
+    // Create minimal swap payload
     const swapInput: SwapInput = {
       source_network: params.source_network,
       source_token: params.source_token,
       destination_network: params.destination_network,
       destination_token: params.destination_token,
-      source_address: starknetAddress,
       destination_address: params.destination_address,
       amount: params.amount,
-      refuel: params.refuel || false,
-      reference_id: referenceId,
-      use_deposit_address: true,
     };
 
-    const swap = await layerswapManager.createSwap(swapInput);
+    console.log('swapInput:', swapInput);
+
+    const swapResponse = await layerswapManager.createSwap(swapInput);
+    console.log('swap created:', swapResponse);
 
     // Step 4: Get deposit actions
-    const depositActions = await layerswapManager.getDepositActions(swap.id);
+    const depositActions = await layerswapManager.getDepositActions(
+      swapResponse.data.swap.id,
+      params.source_address
+    );
 
-    if (depositActions.length === 0) {
+    console.log('depositActions:', depositActions);
+
+    if (!depositActions || depositActions.length === 0) {
       throw new Error('No deposit actions received from Layerswap');
     }
 
@@ -84,15 +93,38 @@ export const layerswap_execute_bridge = async (
     // Step 5: Send transaction on Starknet
     let txHash;
 
-    // For ETH transfers
-    if (params.source_token === 'ETH') {
+    // For token transfers using the call_data from API
+    if (depositAction.call_data) {
+      // Parse the call data from the API response
+      const callData = JSON.parse(depositAction.call_data);
+
+      // Execute the transactions sequentially
+      // Note: We're assuming the first item in the callData array is the token transfer
+      if (callData && callData.length > 0) {
+        const tokenContract = callData[0].contractAddress;
+        const entrypoint = callData[0].entrypoint;
+        const calldata = callData[0].calldata;
+
+        txHash = await layerswapManager.executeTransaction(
+          tokenContract,
+          entrypoint,
+          calldata
+        );
+
+        console.log('Transaction sent:', txHash);
+      } else {
+        throw new Error('Invalid call data format from Layerswap');
+      }
+    }
+    // Fall back to ETH transfer if needed
+    else if (params.source_token === 'ETH') {
       txHash = await layerswapManager.executeEthTransfer(
-        depositAction.token_address,
-        depositAction.deposit_address,
+        depositAction.token.contract,
+        depositAction.to_address,
         params.amount
       );
+      console.log('ETH transaction sent:', txHash);
     } else {
-      // For ERC20 tokens (this would need to be implemented based on specific token requirements)
       throw new Error(`Support for ${params.source_token} not yet implemented`);
     }
 
@@ -104,12 +136,14 @@ export const layerswap_execute_bridge = async (
 
     let pollAttempt = 0;
     let swapCompleted = false;
-    let finalSwap: SwapResponse | null = null;
+    let finalSwap: SwapResponseData | null = null;
 
     while (pollAttempt < maxPollAttempts && !swapCompleted) {
       await new Promise((resolve) => setTimeout(resolve, pollIntervalMs));
 
-      const swapStatus = await layerswapManager.getSwapStatus(swap.id);
+      const swapStatus = await layerswapManager.getSwapStatus(
+        swapResponse.data.swap.id
+      );
 
       if (swapStatus.status === SwapStatus.COMPLETED) {
         swapCompleted = true;
@@ -132,8 +166,8 @@ export const layerswap_execute_bridge = async (
       return {
         status: 'pending',
         result: {
-          swapId: swap.id,
-          sourceTransaction: txHash.transaction_hash,
+          swapId: swapResponse.data.swap.id,
+          sourceTransaction: txHash?.transaction_hash,
           referenceId,
           message: 'Maximum poll attempts reached. Check swap status manually.',
         },
@@ -143,14 +177,13 @@ export const layerswap_execute_bridge = async (
     return {
       status: 'success',
       result: {
-        swapId: swap.id,
-        sourceTransaction: txHash.transaction_hash,
-        destinationTransaction: finalSwap?.output?.transaction_id,
+        swapId: swapResponse.data.swap.id,
+        sourceTransaction: txHash?.transaction_hash,
+        destinationTransaction: finalSwap?.transactions?.[0]?.transaction_id,
         status: finalSwap?.status,
         referenceId,
-        fee: quote.fee,
         amount: params.amount,
-        destinationAmount: quote.destination_amount,
+        destinationAmount: quote.receive_amount,
       },
     };
   } catch (error) {
