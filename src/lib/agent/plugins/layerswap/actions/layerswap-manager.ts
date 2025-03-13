@@ -96,6 +96,18 @@ export class LayerswapManager {
   }
 
   /**
+   * Executes a multicall on the Starknet network
+   *
+   * @param {any} calls - calldatas in array
+   * @returns {Promise<any>} - Transaction result
+   */
+  async executeMultiCall(calls: any): Promise<any> {
+    const account = this.createAccount();
+
+    return account.execute(calls);
+  }
+
+  /**
    * Checks if the bridge route is supported and gets limits
    *
    * @param {string} sourceNetwork - Source network identifier
@@ -317,6 +329,8 @@ export class LayerswapManager {
         );
         throw new Error('Invalid response format from swap status API');
       }
+
+      console.log("swapstatus response.data:", response.data)
 
       return response.data.data.swap;
     } catch (error) {

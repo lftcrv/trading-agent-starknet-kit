@@ -82,8 +82,6 @@ export const layerswap_execute_bridge = async (
       params.source_address
     );
 
-    console.log('depositActions:', depositActions);
-
     if (!depositActions || depositActions.length === 0) {
       throw new Error('No deposit actions received from Layerswap');
     }
@@ -92,24 +90,12 @@ export const layerswap_execute_bridge = async (
 
     // Step 5: Send transaction on Starknet
     let txHash;
-
     // For token transfers using the call_data from API
     if (depositAction.call_data) {
-      // Parse the call data from the API response
-      const callData = JSON.parse(depositAction.call_data);
+      const calldata = JSON.parse(depositAction.call_data);
 
-      // Execute the transactions sequentially
-      // Note: We're assuming the first item in the callData array is the token transfer
-      if (callData && callData.length > 0) {
-        const tokenContract = callData[0].contractAddress;
-        const entrypoint = callData[0].entrypoint;
-        const calldata = callData[0].calldata;
-
-        txHash = await layerswapManager.executeTransaction(
-          tokenContract,
-          entrypoint,
-          calldata
-        );
+      if (calldata && calldata.length > 0) {
+        txHash = await layerswapManager.executeMultiCall(calldata);
 
         console.log('Transaction sent:', txHash);
       } else {
