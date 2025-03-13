@@ -1,6 +1,6 @@
 import { StarknetToolRegistry } from 'src/lib/agent/tools/tools';
 import {
-  layerswap_get_available_routes,
+  // layerswap_get_available_routes,
   layerswap_get_quote,
   layerswap_create_swap,
   layerswap_get_swap_status,
@@ -19,13 +19,13 @@ import {
  */
 export const registerLayerswapTools = () => {
   // Tool to get available bridge routes
-  StarknetToolRegistry.registerTool({
-    name: 'layerswap_get_available_routes',
-    plugins: 'layerswap',
-    description: 'Get available routes for bridging assets between networks',
-    schema: getAvailableRoutesSchema,
-    execute: layerswap_get_available_routes,
-  });
+  // StarknetToolRegistry.registerTool({
+  //   name: 'layerswap_get_available_routes',
+  //   plugins: 'layerswap',
+  //   description: 'Get available routes for bridging assets between networks',
+  //   schema: getAvailableRoutesSchema,
+  //   execute: layerswap_get_available_routes,
+  // });
 
   // Tool to get a bridge quote
   StarknetToolRegistry.registerTool({
