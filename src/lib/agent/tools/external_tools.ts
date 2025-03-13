@@ -21,7 +21,7 @@ export const createAllowedToollkits = (
   Toolkits: string[],
   allowed_external_tool?: string[]
 ): Tool[] => {
-  let allowedToolsKits: Tool[] = [];
+  const allowedToolsKits: Tool[] = [];
   if (!Array.isArray(Toolkits)) {
     return allowedToolsKits;
   }

@@ -25,7 +25,7 @@ describe('place_pixel', () => {
 
       expect(parsed).toEqual({
         status: 'success',
-        transaction_hash: expect.any(Array<String>),
+        transaction_hash: expect.any(Array<string>),
       });
     });
     it('returns success', async () => {
@@ -62,7 +62,7 @@ describe('place_pixel', () => {
 
       expect(parsed).toEqual({
         status: 'success',
-        transaction_hash: expect.any(Array<String>),
+        transaction_hash: expect.any(Array<string>),
       });
     });
     it('returns success', async () => {
@@ -81,7 +81,7 @@ describe('place_pixel', () => {
 
       expect(parsed).toEqual({
         status: 'success',
-        transaction_hash: expect.any(Array<String>),
+        transaction_hash: expect.any(Array<string>),
       });
     });
   });

@@ -76,7 +76,7 @@ export class StarknetToolRegistry {
     const filteredTools = this.tools.filter((tool) =>
       allowed_tools.includes(tool.name)
     );
-    let tools = this.tools.filter((tool) =>
+    const tools = this.tools.filter((tool) =>
       allowed_tools.includes(tool.plugins)
     );
     return tools.map(({ name, description, schema, execute }) =>
