@@ -148,7 +148,7 @@ const checkParseJson = (agent_config_name: string): JsonConfig | undefined => {
       createContextFromJson(json)
     );
 
-    let jsonconfig: JsonConfig = {
+    const jsonconfig: JsonConfig = {
       prompt: systemMessagefromjson,
       name: json.name,
       interval: json.interval,
