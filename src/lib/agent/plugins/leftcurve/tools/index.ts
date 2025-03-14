@@ -30,6 +30,7 @@ import { paradexGetBalance } from '../../paradex/actions/fetchAccountBalance';
 import { paradexGetBBO } from '../../paradex/actions/getBBO';
 import { paradexListMarkets } from '../../paradex/actions/listMarketsOnParadex';
 import { getAnalysisParadex } from '../actions/paradexActions/fetchBackendAnalysis';
+import { sendParadexBalance } from '../actions/paradexActions/sendAccountBalanceToBackend';
 
 export const registerLftcrvTools = () => {
   StarknetToolRegistry.registerTool({
@@ -127,6 +128,14 @@ export const registerLftcrvTools = () => {
     description: 'Get account balance on Paradex exchange (USDC)',
     schema: getBalanceSchema,
     execute: paradexGetBalance,
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'send_balance_paradex',
+    plugins: 'lftcrv',
+    description: 'Always sends your Paradex balance to the backend with this function after any action on Paradex.',
+    schema: getBalanceSchema,
+    execute: sendParadexBalance,
   });
 
   StarknetToolRegistry.registerTool({
