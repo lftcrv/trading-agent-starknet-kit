@@ -2,16 +2,18 @@ import { StarknetToolRegistry } from 'src/lib/agent/tools/tools';
 import {
   avnuAnalysisSchema,
   cancelOrderSchema,
+  depositToParadexSchema,
   getMarketDetailsSchema,
   getMarketTradingInfoSchema,
   placeOrderLimitSchema,
   placeOrderMarketSchema,
   walletSchema,
+  withdrawFromParadexSchema,
 } from '../schema';
 import { swapSchema } from '../../avnu/schema';
 import { swapTokens } from '../actions/avnuActions/swap';
 import { getAvnuLatestAnalysis } from '../actions/avnuActions/fetchAvnuLatestAnalysis';
-import { getWalletBalances } from '../actions/avnuActions/fetchAnvuBalances';
+import { getWalletBalances } from '../actions/avnuActions/fetchAvnuBalances';
 import { paradexGetMarketDetails } from '../actions/paradexActions/fetchDetailedParadexMarkets';
 import { paradexGetMarketTradingInfo } from '../actions/paradexActions/fetchBasicParadexMarkets';
 import { paradexCancelOrder } from '../actions/paradexActions/cancelOrder';
@@ -30,11 +32,14 @@ import { paradexGetBalance } from '../../paradex/actions/fetchAccountBalance';
 import { paradexGetBBO } from '../../paradex/actions/getBBO';
 import { paradexListMarkets } from '../../paradex/actions/listMarketsOnParadex';
 import { getAnalysisParadex } from '../actions/paradexActions/fetchBackendAnalysis';
+import { depositToParadex } from '../actions/layerswapActions/depositToParadex';
+import { withdrawFromParadex } from '../actions/layerswapActions/withdrawFromParadex';
 
-export const registerLftcrvTools = () => {
+export const registerLeftcurveTools = () => {
+  console.log("registering leftcurve")
   StarknetToolRegistry.registerTool({
     name: 'get_avnu_latest_analysis',
-    plugins: 'lftcrv',
+    plugins: 'leftcurve',
     description:
       'Get the latest market analysis. Use it to deicde what is the best swap to do.',
     schema: avnuAnalysisSchema,
@@ -43,7 +48,7 @@ export const registerLftcrvTools = () => {
 
   StarknetToolRegistry.registerTool({
     name: 'get_wallet_balances',
-    plugins: 'lftcrv',
+    plugins: 'leftcurve',
     description: 'Get all balances from starket wallet',
     schema: walletSchema,
     execute: getWalletBalances,
@@ -51,7 +56,7 @@ export const registerLftcrvTools = () => {
 
   StarknetToolRegistry.registerTool({
     name: 'swap_tokens',
-    plugins: 'lftcrv',
+    plugins: 'leftcurve',
     description:
       'Swap a specified amount of one token for another token, on AVNU',
     schema: swapSchema,
@@ -60,7 +65,7 @@ export const registerLftcrvTools = () => {
 
   StarknetToolRegistry.registerTool({
     name: 'get_paradex_market_details',
-    plugins: 'lftcrv',
+    plugins: 'leftcurve',
     description:
       'Get maximum detailed information about a specific market on Paradex',
     schema: getMarketDetailsSchema,
@@ -69,7 +74,7 @@ export const registerLftcrvTools = () => {
 
   StarknetToolRegistry.registerTool({
     name: 'get_paradex_market_trading_info',
-    plugins: 'lftcrv',
+    plugins: 'leftcurve',
     description:
       'Get essential trading information for one or multiple markets on Paradex',
     schema: getMarketTradingInfoSchema,
@@ -78,7 +83,7 @@ export const registerLftcrvTools = () => {
 
   StarknetToolRegistry.registerTool({
     name: 'place_order_limit_paradex',
-    plugins: 'lftcrv',
+    plugins: 'leftcurve',
     description:
       'Place an order limit on Paradex exchange. Base you on paradex analysis and your paradex positions to decide if you should use this action',
     schema: placeOrderLimitSchema,
@@ -87,7 +92,7 @@ export const registerLftcrvTools = () => {
 
   StarknetToolRegistry.registerTool({
     name: 'place_order_market_paradex',
-    plugins: 'lftcrv',
+    plugins: 'leftcurve',
     description:
       'Place an order market on Paradex exchange. Base you on paradex analysis to decide if you should use this action',
     schema: placeOrderMarketSchema,
@@ -96,7 +101,7 @@ export const registerLftcrvTools = () => {
 
   StarknetToolRegistry.registerTool({
     name: 'cancel_order_paradex',
-    plugins: 'lftcrv',
+    plugins: 'leftcurve',
     description:
       'Cancel an unexecuted order (not yet filled) on Paradex exchange without affecting the position or the asset balance',
     schema: cancelOrderSchema,
@@ -105,7 +110,7 @@ export const registerLftcrvTools = () => {
 
   StarknetToolRegistry.registerTool({
     name: 'get_open_orders',
-    plugins: 'lftcrv',
+    plugins: 'leftcurve',
     description:
       'Get all open orders on Paradex exchange, optionally filtered by market',
     schema: getOpenOrdersSchema,
@@ -114,7 +119,7 @@ export const registerLftcrvTools = () => {
 
   StarknetToolRegistry.registerTool({
     name: 'get_open_positions',
-    plugins: 'lftcrv',
+    plugins: 'leftcurve',
     description:
       'Get all open positions on Paradex exchange, optionally filtered by market',
     schema: getOpenPositionsSchema,
@@ -123,7 +128,7 @@ export const registerLftcrvTools = () => {
 
   StarknetToolRegistry.registerTool({
     name: 'get_balance_on_paradex',
-    plugins: 'lftcrv',
+    plugins: 'leftcurve',
     description: 'Get account balance on Paradex exchange (USDC)',
     schema: getBalanceSchema,
     execute: paradexGetBalance,
@@ -131,7 +136,7 @@ export const registerLftcrvTools = () => {
 
   StarknetToolRegistry.registerTool({
     name: 'get_bbo',
-    plugins: 'lftcrv',
+    plugins: 'leftcurve',
     description: 'Get Best Bid/Offer data for a specified Paradex market',
     schema: getBBOSchema,
     execute: paradexGetBBO,
@@ -139,7 +144,7 @@ export const registerLftcrvTools = () => {
 
   StarknetToolRegistry.registerTool({
     name: 'list_markets',
-    plugins: 'lftcrv',
+    plugins: 'leftcurve',
     description: 'Get a list of all available market symbols on Paradex',
     schema: listMarketsSchema,
     execute: paradexListMarkets,
@@ -147,9 +152,26 @@ export const registerLftcrvTools = () => {
 
   StarknetToolRegistry.registerTool({
     name: 'get_analysis_paradex',
-    plugins: 'lftcrv',
+    plugins: 'leftcurve',
     description: 'Get the latest analysis of Paradex.',
     schema: listMarketsSchema,
     execute: getAnalysisParadex,
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'deposit_to_paradex',
+    plugins: 'leftcurve',
+    description: 'Deposit USDC from Starknet to Paradex using Layerswap bridge',
+    schema: depositToParadexSchema,
+    execute: depositToParadex,
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'withdraw_from_paradex',
+    plugins: 'leftcurve',
+    description:
+      'Withdraw USDC from Paradex to Starknet using Layerswap bridge',
+    schema: withdrawFromParadexSchema,
+    execute: withdrawFromParadex,
   });
 };

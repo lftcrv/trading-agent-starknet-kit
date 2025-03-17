@@ -24,6 +24,5 @@ export const getLayerswapApiKey = (): string => {
  * @returns {string} The Layerswap base URL
  */
 export const getLayerswapBaseUrl = (): string => {
-  console.log("getLayerswapbaseurl")
   return process.env.LAYERSWAP_BASE_URL || 'https://api.layerswap.io/api/v2';
 };

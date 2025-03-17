@@ -19,7 +19,7 @@ import { registerTelegramTools } from '../plugins/telegram/tools';
 import { TelegramInterface } from '../plugins/telegram/interfaces';
 import { registerArtpeaceTools } from '../plugins/artpeace/tools';
 import { registerParadexTools } from '../plugins/paradex/tools';
-import { registerLftcrvTools } from '../plugins/leftcurve/tools';
+import { registerLeftcurveTools } from '../plugins/leftcurve/tools';
 import { registerLayerswapTools } from '../plugins/layerswap/tools';
 
 export interface StarknetAgentInterface {
@@ -94,7 +94,7 @@ export const registerTools = () => {
 
   registerAvnuTools();
 
-  registerLftcrvTools();
+  registerLeftcurveTools();
 
   registerLayerswapTools();
 
