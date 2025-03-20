@@ -216,20 +216,14 @@ export class LayerswapManager {
       // if (swapInput.source_address) {
       //   payload['source_address'] = swapInput.source_address;
       // }
-
-      // if (swapInput.reference_id) {
-      //   payload['reference_id'] = swapInput.reference_id;
-      // }
+      if (swapInput.reference_id) {
+        (payload as any)['reference_id'] = swapInput.reference_id;
+      }
 
       // // The use_deposit_address might be causing issues, only add if needed and not false
       // if (swapInput.use_deposit_address === true) {
       //   payload['use_deposit_address'] = true;
       // }
-
-      console.log(
-        'Creating swap with payload:',
-        JSON.stringify(payload, null, 2)
-      );
 
       const response = await axios.post(`${this.baseUrl}/swaps`, payload, {
         headers: {
@@ -329,8 +323,6 @@ export class LayerswapManager {
         );
         throw new Error('Invalid response format from swap status API');
       }
-
-      console.log("swapstatus response.data:", response.data)
 
       return response.data.data.swap;
     } catch (error) {

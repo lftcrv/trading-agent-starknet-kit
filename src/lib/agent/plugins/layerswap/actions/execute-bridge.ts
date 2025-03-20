@@ -33,8 +33,6 @@ export const layerswap_execute_bridge = async (
       params.refuel
     );
 
-    console.log('limits:', limits);
-
     // Validate amount
     if (
       params.amount < limits.min_amount ||
@@ -55,11 +53,8 @@ export const layerswap_execute_bridge = async (
       refuel: params.refuel,
     });
 
-    console.log('quote:', quote);
-
     // Step 3: Create swap
     const referenceId = params.reference_id || `bridge-${Date.now()}`;
-    console.log('referenceId:', referenceId);
 
     // Create minimal swap payload
     const swapInput: SwapInput = {
@@ -71,10 +66,7 @@ export const layerswap_execute_bridge = async (
       amount: params.amount,
     };
 
-    console.log('swapInput:', swapInput);
-
     const swapResponse = await layerswapManager.createSwap(swapInput);
-    console.log('swap created:', swapResponse);
 
     // Step 4: Get deposit actions
     const depositActions = await layerswapManager.getDepositActions(
@@ -97,7 +89,6 @@ export const layerswap_execute_bridge = async (
       if (calldata && calldata.length > 0) {
         txHash = await layerswapManager.executeMultiCall(calldata);
 
-        console.log('Transaction sent:', txHash);
       } else {
         throw new Error('Invalid call data format from Layerswap');
       }
