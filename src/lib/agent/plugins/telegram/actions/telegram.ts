@@ -61,7 +61,7 @@ class TelegramBotServer {
    */
   private async waitForPendingMessages(): Promise<TelegramBot.Message[]> {
     const webhookInfo = await this.bot.getWebHookInfo();
-    let pendingCount = webhookInfo.pending_update_count;
+    const pendingCount = webhookInfo.pending_update_count;
     if (pendingCount === 0) {
       return [];
     }

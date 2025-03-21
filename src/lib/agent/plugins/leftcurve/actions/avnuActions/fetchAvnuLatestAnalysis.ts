@@ -31,7 +31,7 @@ export class AvnuAnalysisService {
 export const getAvnuLatestAnalysis = async (
   agent: StarknetAgentInterface,
   params: AvnuAnalysisParams
-): Promise<String> => {
+): Promise<string> => {
   try {
     console.log('Execute getAvnuLatestAnalysis');
     const service = new AvnuAnalysisService();

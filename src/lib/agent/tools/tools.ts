@@ -19,7 +19,8 @@ import { registerTelegramTools } from '../plugins/telegram/tools';
 import { TelegramInterface } from '../plugins/telegram/interfaces';
 import { registerArtpeaceTools } from '../plugins/artpeace/tools';
 import { registerParadexTools } from '../plugins/paradex/tools';
-import { registerLftcrvTools } from '../plugins/leftcurve/tools';
+import { registerLeftcurveTools } from '../plugins/leftcurve/tools';
+import { registerLayerswapTools } from '../plugins/layerswap/tools';
 
 export interface StarknetAgentInterface {
   getAccountCredentials: () => {
@@ -75,7 +76,7 @@ export class StarknetToolRegistry {
     const filteredTools = this.tools.filter((tool) =>
       allowed_tools.includes(tool.name)
     );
-    let tools = this.tools.filter((tool) =>
+    const tools = this.tools.filter((tool) =>
       allowed_tools.includes(tool.plugins)
     );
     return tools.map(({ name, description, schema, execute }) =>
@@ -93,7 +94,9 @@ export const registerTools = () => {
 
   registerAvnuTools();
 
-  registerLftcrvTools();
+  registerLeftcurveTools();
+
+  registerLayerswapTools();
 
   registerParadexTools();
 

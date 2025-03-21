@@ -59,3 +59,31 @@ export const cancelOrderSchema = z.object({
       'explanation on why to cancel that order as a trader. Express yourself according to your personality, your bio, and your lore. Give deep specific details about what leads to your decision to buy that specific asset at these speficic time, according to your data, market conditions, ...'
     ),
 });
+
+export const depositToParadexSchema = z.object({
+  amount: z
+    .number()
+    .positive()
+    .describe('Amount of USDC to deposit from Starknet to Paradex'),
+  destination_address: z
+    .string()
+    .describe('Paradex destination address to receive the USDC'),
+  reference_id: z
+    .string()
+    .optional()
+    .describe('Optional reference ID for tracking the transaction'),
+});
+
+export const withdrawFromParadexSchema = z.object({
+  amount: z
+    .number()
+    .positive()
+    .describe('Amount of USDC to withdraw from Paradex to Starknet'),
+  destination_address: z
+    .string()
+    .describe('Starknet destination address to receive the USDC'),
+  reference_id: z
+    .string()
+    .optional()
+    .describe('Optional reference ID for tracking the transaction'),
+});
