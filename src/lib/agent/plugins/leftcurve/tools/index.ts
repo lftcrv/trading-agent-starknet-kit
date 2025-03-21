@@ -34,6 +34,7 @@ import { paradexListMarkets } from '../../paradex/actions/listMarketsOnParadex';
 import { getAnalysisParadex } from '../actions/paradexActions/fetchBackendAnalysis';
 import { depositToParadex } from '../actions/layerswapActions/depositToParadex';
 import { withdrawFromParadex } from '../actions/layerswapActions/withdrawFromParadex';
+import { sendParadexBalance } from '../actions/paradexActions/sendAccountBalanceToBackend';
 
 export const registerLeftcurveTools = () => {
   console.log("registering leftcurve")
@@ -132,6 +133,22 @@ export const registerLeftcurveTools = () => {
     description: 'Get account balance on Paradex exchange (USDC)',
     schema: getBalanceSchema,
     execute: paradexGetBalance,
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'send_balance_paradex',
+    plugins: 'leftcurve',
+    description: 'Always sends your Paradex balance to the backend with this function after any action on Paradex.',
+    schema: getBalanceSchema,
+    execute: sendParadexBalance,
+  });
+
+  StarknetToolRegistry.registerTool({
+    name: 'send_balance_paradex',
+    plugins: 'leftcurve',
+    description: 'Always sends your Paradex balance to the backend with this function after any action on Paradex.',
+    schema: getBalanceSchema,
+    execute: sendParadexBalance,
   });
 
   StarknetToolRegistry.registerTool({
