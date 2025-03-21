@@ -21,10 +21,11 @@ export const depositToParadex = async (
   agent: StarknetAgentInterface,
   params: DepositToParadexParams
 ) => {
+  console.log('Executing depositToParadex from Lftcrv');
   try {
     // Get account public key for the source address
     const { accountPublicKey } = agent.getAccountCredentials();
-    
+
     // Set up parameters for layerswap bridge
     const bridgeParams: ExecuteBridgeParams = {
       source_network: 'STARKNET_MAINNET',
@@ -34,7 +35,7 @@ export const depositToParadex = async (
       source_address: accountPublicKey,
       destination_address: params.destination_address,
       amount: params.amount,
-      reference_id: params.reference_id || `deposit-paradex-${Date.now()}`,
+      reference_id: undefined,
       refuel: false,
       // Default values for polling
       max_poll_attempts: 30,
@@ -57,13 +58,14 @@ export const depositToParadex = async (
           referenceId: bridgeParams.reference_id,
         },
       };
+      console.log('depositObject:', tradeObject);
 
-      const tradingInfoDto = {
-        runtimeAgentId: getContainerId(),
-        information: tradeObject,
-      };
+      // const tradingInfoDto = {
+      //   runtimeAgentId: getContainerId(),
+      //   information: tradeObject,
+      // };
 
-      await sendTradingInfo(tradingInfoDto);
+      // await sendTradingInfo(tradingInfoDto);
       console.log('Deposit to Paradex completed successfully:', result.result);
     }
 
